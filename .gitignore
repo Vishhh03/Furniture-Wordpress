@@ -1,0 +1,32 @@
+# OS & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+
+# Environment
+.env
+.env.local
+
+# Docker
+docker-compose.override.yml
+
+# WordPress
+wp-content/uploads/
+wp-content/upgrade/
+wp-content/cache/
+wp-content/backups/
+wp-content/wflogs/
+
+# Database dumps
+*.sql
+*.sql.gz
+
+# Archives
+*.zip
+*.tar.gz
+
+# Node (if used later)
+node_modules/
+npm-debug.log
