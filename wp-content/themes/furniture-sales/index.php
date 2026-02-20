@@ -51,6 +51,38 @@
         </div>
     </section>
 
+    <!-- ═══════════ REVIEWS ═══════════ -->
+    <!-- ═══════════ REVIEWS ═══════════ -->
+    <section class="reviews">
+        <div class="container">
+            <h2 class="section-title text-center">Loved by Designers</h2>
+            <?php 
+            $reviews_shortcode = get_theme_mod( 'reviews_shortcode' );
+            if ( ! empty( $reviews_shortcode ) ) : 
+                echo do_shortcode( $reviews_shortcode );
+            else : 
+            ?>
+                <div class="reviews-grid">
+                    <div class="review-card">
+                        <div class="stars">★★★★★</div>
+                        <blockquote>"Absolutely stunning quality. The teak finish is exactly what I was looking for. It feels solid, heavy, and incredibly premium."</blockquote>
+                        <cite>— Sarah M., Interior Architect</cite>
+                    </div>
+                    <div class="review-card">
+                        <div class="stars">★★★★★</div>
+                        <blockquote>"We ordered two for our lounge and they are the talk of everyone who visits. Delivery was seamless and fast."</blockquote>
+                        <cite>— Rohan K., verified buyer</cite>
+                    </div>
+                    <div class="review-card">
+                        <div class="stars">★★★★★</div>
+                        <blockquote>"Minimalist perfection. The fabric texture is even better in person than in the photos. Highly recommended."</blockquote>
+                        <cite>— Ananya D., Bangalore</cite>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </section>
+
     <!-- ═══════════ BUY SECTION (WooCommerce) ═══════════ -->
     <section id="buy-now" class="buy-section container">
         <?php 
@@ -79,12 +111,18 @@
                         <div class="price"><?php echo $product->get_price_html(); ?></div>
                         <div class="short-desc"><?php the_excerpt(); ?></div>
                         
-                        <form class="cart" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype="multipart/form-data">
-                            <?php woocommerce_quantity_input( array(), $product, true ); ?>
-                            <button type="submit" name="add-to-cart" value="<?php echo esc_attr( $product->get_id() ); ?>" class="btn single_add_to_cart_button button alt">
-                                <?php echo esc_html( $product->single_add_to_cart_text() ); ?>
-                            </button>
-                        </form>
+                        <?php
+                        // Output the standard WooCommerce Add to Cart button which handles AJAX via class "ajax_add_to_cart"
+                        echo apply_filters( 'woocommerce_loop_add_to_cart_link',
+                            sprintf( '<a href="%s" data-quantity="%s" class="%s" %s>%s</a>',
+                                esc_url( $product->add_to_cart_url() ),
+                                esc_attr( isset( $args['quantity'] ) ? $args['quantity'] : 1 ),
+                                esc_attr( isset( $args['class'] ) ? $args['class'] : 'button alt add_to_cart_button ajax_add_to_cart' ),
+                                isset( $args['attributes'] ) ? wc_implode_html_attributes( $args['attributes'] ) : '',
+                                esc_html( $product->add_to_cart_text() )
+                            ),
+                        $product, array() );
+                        ?>
                         
                         <div class="trust-badges">
                             <p><strong>🚚 Fast Dispatch:</strong> Ships within 24 hours</p>

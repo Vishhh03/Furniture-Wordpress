@@ -90,5 +90,24 @@ function furniture_customize_register( $wp_customize ) {
             'settings' => $id,
         ) ) );
     }
+
+    // Reviews Section (Shortcode Support)
+    $wp_customize->add_section( 'furniture_reviews', array(
+        'title'    => __( 'Reviews Section', 'furniture-sales' ),
+        'priority' => 32,
+    ) );
+
+    $wp_customize->add_setting( 'reviews_shortcode', array(
+        'default'   => '',
+        'transport' => 'refresh',
+        'sanitize_callback' => 'wp_kses_post',
+    ) );
+
+    $wp_customize->add_control( 'reviews_shortcode', array(
+        'label'       => __( 'Reviews Plugin Shortcode', 'furniture-sales' ),
+        'description' => __( 'Paste a shortcode from a plugin (e.g. [site_reviews]) to replace the default testimonials.', 'furniture-sales' ),
+        'section'     => 'furniture_reviews',
+        'type'        => 'textarea',
+    ) );
 }
 add_action( 'customize_register', 'furniture_customize_register' );
