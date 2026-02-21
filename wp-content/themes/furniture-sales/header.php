@@ -8,22 +8,39 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
-<header class="site-header">
-    <div class="site-branding">
-        <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-            <h1><?php bloginfo( 'name' ); ?></h1>
-        </a>
+<div class="top-bar">
+    <div class="container text-center">
+        DELIVERY WITHIN INDIA. SHIPPING CHARGES APPLY.
     </div>
-    <nav class="site-navigation" style="display: flex; align-items: center; gap: 1.5rem;">
-        <?php if ( class_exists( 'WooCommerce' ) ) : ?>
-            <a href="<?php echo wc_get_cart_url(); ?>" class="cart-link" title="View Cart">
-                <svg class="cart-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="9" cy="21" r="1"/>
-                    <circle cx="20" cy="21" r="1"/>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                </svg>
-                <span class="cart-count"><?php echo WC()->cart->get_cart_contents_count(); ?></span>
+</div>
+
+<header class="site-header">
+    <div class="header-container">
+        <div class="site-branding">
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
+                <h1><?php bloginfo( 'name' ); ?></h1>
             </a>
-        <?php endif; ?>
-    </nav>
+        </div>
+        <nav class="site-navigation desktop-only">
+            <a href="#shop">Shop</a>
+            <a href="#reviews">Reviews</a>
+            <a href="#faq">FAQ</a>
+            <a href="#about">About</a>
+        </nav>
+        <div class="header-actions">
+            <a href="#" class="icon-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </a>
+            <?php if ( class_exists( 'WooCommerce' ) ) : ?>
+                <a href="<?php echo wc_get_cart_url(); ?>" class="cart-link" title="View Cart">
+                    <svg class="cart-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span class="cart-count"><?php echo WC()->cart->get_cart_contents_count(); ?></span>
+                </a>
+            <?php endif; ?>
+        </div>
+    </div>
 </header>

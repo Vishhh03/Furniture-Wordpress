@@ -2,142 +2,211 @@
 
 <main class="site-main">
 
-    <!-- ═══════════ HERO — Split Screen ═══════════ -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">Timeless<br>Comfort</h1>
-            <p class="hero-subtitle">Handcrafted furniture for the contemporary home. Experience quality that speaks for itself.</p>
-            <a href="#buy-now" class="btn">Shop Now</a>
-        </div>
-        <div class="hero-image">
-            <img src="<?php echo esc_url( get_theme_mod( 'hero_image', 'https://placehold.co/800x1000/d4c8b8/3a3a3a?text=Your+Product+Hero' ) ); ?>" alt="Premium Furniture">
-        </div>
-    </section>
-
-    <!-- ═══════════ TRUST BAR ═══════════ -->
-    <div class="trust-bar">
-        <div class="container text-center">
-            Free Shipping in India &nbsp;•&nbsp; 5 Year Warranty &nbsp;•&nbsp; Secure Checkout
-        </div>
-    </div>
-
-    <!-- ═══════════ FEATURES ═══════════ -->
-    <section class="features">
+    <!-- 1. HERO - ONE BED, TWO MOODS -->
+    <section class="py-section bg-alt" style="padding-top: 2rem;">
         <div class="container">
-            <h2 class="section-title text-center">Designed for Living</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-img-wrapper">
-                        <img src="<?php echo esc_url( get_theme_mod( 'feature_1_img', 'https://placehold.co/600x450/e3e3dd/282828?text=Premium+Wood' ) ); ?>" alt="Material Detail">
-                    </div>
-                    <h3>Premium Materials</h3>
-                    <p>Sourced from the finest sustainable teak wood and premium fabrics that age beautifully.</p>
+            <div class="split-section" style="gap: 2rem;">
+                <div class="split-image">
+                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/hero_bed.png" alt="Premium Bed Image" style="min-height: 500px; border-radius: 4px;">
                 </div>
-                <div class="feature-card">
-                    <div class="feature-img-wrapper">
-                        <img src="<?php echo esc_url( get_theme_mod( 'feature_2_img', 'https://placehold.co/600x450/e3e3dd/282828?text=Ergonomic+Curve' ) ); ?>" alt="Ergonomic Design">
-                    </div>
-                    <h3>Ergonomic Design</h3>
-                    <p>Designed for supportive comfort during long hours of use, without compromising style.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-img-wrapper">
-                        <img src="<?php echo esc_url( get_theme_mod( 'feature_3_img', 'https://placehold.co/600x450/e3e3dd/282828?text=Joinery+Detail' ) ); ?>" alt="Built to Last">
-                    </div>
-                    <h3>Built to Last</h3>
-                    <p>Hand-assembled joinery ensuring your furniture stands the test of time.</p>
+                <div class="split-content" style="padding-left: 3rem;">
+                    <h1 class="section-title">One Bed, Two Moods.</h1>
+                    <p style="font-size: 1.05rem; line-height: 1.7; margin-bottom: 2.5rem;">We craft our luxury solid wood beds to fit your lifestyle. From day to night, experience premium quality without compromise.</p>
+                    <a href="#shop" class="btn">Shop The Collection</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ═══════════ REVIEWS ═══════════ -->
-    <!-- ═══════════ REVIEWS ═══════════ -->
-    <section class="reviews">
+    <!-- 2. SHOP THE BED (CONFIGURATOR) -->
+    <section id="shop" class="py-section">
         <div class="container">
-            <h2 class="section-title text-center">Loved by Designers</h2>
-            <?php 
-            $reviews_shortcode = get_theme_mod( 'reviews_shortcode' );
-            if ( ! empty( $reviews_shortcode ) ) : 
-                echo do_shortcode( $reviews_shortcode );
-            else : 
-            ?>
-                <div class="reviews-grid">
-                    <div class="review-card">
-                        <div class="stars">★★★★★</div>
-                        <blockquote>"Absolutely stunning quality. The teak finish is exactly what I was looking for. It feels solid, heavy, and incredibly premium."</blockquote>
-                        <cite>— Sarah M., Interior Architect</cite>
-                    </div>
-                    <div class="review-card">
-                        <div class="stars">★★★★★</div>
-                        <blockquote>"We ordered two for our lounge and they are the talk of everyone who visits. Delivery was seamless and fast."</blockquote>
-                        <cite>— Rohan K., verified buyer</cite>
-                    </div>
-                    <div class="review-card">
-                        <div class="stars">★★★★★</div>
-                        <blockquote>"Minimalist perfection. The fabric texture is even better in person than in the photos. Highly recommended."</blockquote>
-                        <cite>— Ananya D., Bangalore</cite>
-                    </div>
+            <div class="split-section" style="gap: 4rem;">
+                <div class="product-gallery">
+                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/product_bed.png" alt="Signature Bed Frame" style="border-radius: 4px; border: 1px solid var(--color-border); width: 100%;">
                 </div>
-            <?php endif; ?>
+                <div class="product-configurator">
+                    <h2 class="section-title-sm" style="font-size: 2.2rem; margin-bottom: 0.5rem; letter-spacing: -0.02em;">Signature Bed Frame</h2>
+                    <p class="price" style="font-size: 1.4rem; color: var(--color-muted); margin-bottom: 2rem;">₹54,999 <span style="font-size: 0.9rem;">+ Shipping</span></p>
+                    
+                    <div class="config-group" style="margin-bottom: 2.5rem;">
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.05em; color: var(--color-muted);">Select Wood Color</h4>
+                        <div class="color-swatches" style="display: flex; gap: 1.5rem;">
+                            <label class="swatch-label">
+                                <input type="radio" name="bed_color" value="white" checked>
+                                <span class="swatch" style="background-color: #f4f4f4; border: 1px solid #d1d1d1;"></span>
+                                <span class="swatch-name">White</span>
+                            </label>
+                            <label class="swatch-label">
+                                <input type="radio" name="bed_color" value="black">
+                                <span class="swatch" style="background-color: #222222; border: 1px solid #222;"></span>
+                                <span class="swatch-name">Black</span>
+                            </label>
+                            <label class="swatch-label">
+                                <input type="radio" name="bed_color" value="light_brown">
+                                <span class="swatch" style="background-color: #c4a482; border: 1px solid #b3926f;"></span>
+                                <span class="swatch-name">Light Brown</span>
+                            </label>
+                            <label class="swatch-label">
+                                <input type="radio" name="bed_color" value="dark_brown">
+                                <span class="swatch" style="background-color: #4a3424; border: 1px solid #3d2a1c;"></span>
+                                <span class="swatch-name">Dark Brown</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="config-group" style="margin-bottom: 2.5rem;">
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.05em; color: var(--color-muted);">Select Metal Hook Finish</h4>
+                        <div class="hardware-options">
+                            <label class="hardware-label">
+                                <input type="radio" name="hook_finish" value="steel" checked>
+                                <span>Steel Finish</span>
+                                <span style="margin-left: auto; color: var(--color-muted); font-size: 0.9rem;">Included</span>
+                            </label>
+                            <label class="hardware-label">
+                                <input type="radio" name="hook_finish" value="brass">
+                                <span>Brass Finish</span>
+                                <span style="margin-left: auto; color: var(--color-muted); font-size: 0.9rem;">+₹3,000</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="trust-pill" style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--color-bg-alt); padding: 0.6rem 1rem; border-radius: 50px; font-size: 0.8rem; font-weight: 500; margin-bottom: 2rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        7-day replacement guarantee
+                    </div>
+
+                    <a href="?add-to-cart=15" data-quantity="1" class="btn button product_type_simple add_to_cart_button ajax_add_to_cart" data-product_id="15" aria-label="Add to cart" style="display: block; width: 100%; text-align: center; font-size: 1rem; padding: 1.2rem; text-decoration: none; box-sizing: border-box;">Add to Cart — ₹54,999</a>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- ═══════════ BUY SECTION (WooCommerce) ═══════════ -->
-    <section id="buy-now" class="buy-section container">
-        <?php 
-        $args = array(
-            'post_type'      => 'product',
-            'posts_per_page' => 1,
-        );
-        $loop = new WP_Query( $args );
+    <!-- 3. TEXT BANNER -->
+    <section class="py-section" style="background-color: var(--color-text); color: var(--color-bg);">
+        <div class="container text-center">
+            <h2 class="section-title-sm" style="font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--color-bg);">Handcrafted, solid wood bed frames</h2>
+            <p style="max-width: 800px; margin: 0 auto; color: rgba(255, 255, 255, 0.7); font-size: 1.05rem; line-height: 1.7;">
+                Our signature bed frames are crafted with precision using sustainably sourced premium material. The minimalist design meets maximum comfort, offering a solid foundation for your sleep. Experience British engineering merged with timeless design principles.
+            </p>
+        </div>
+    </section>
 
-        if ( $loop->have_posts() ) :
-            while ( $loop->have_posts() ) : $loop->the_post();
-                global $product;
-        ?>
-                <div class="product-purchase-wrapper">
-                    <div class="product-image">
-                        <?php 
-                        if ( has_post_thumbnail() ) {
-                            the_post_thumbnail( 'large' );
-                        } else {
-                            echo $product->get_image( 'large' );
-                        }
-                        ?>
-                    </div>
-                    <div class="product-details">
-                        <h1><?php the_title(); ?></h1>
-                        <div class="price"><?php echo $product->get_price_html(); ?></div>
-                        <div class="short-desc"><?php the_excerpt(); ?></div>
-                        
-                        <?php
-                        // Output the standard WooCommerce Add to Cart button which handles AJAX via class "ajax_add_to_cart"
-                        echo apply_filters( 'woocommerce_loop_add_to_cart_link',
-                            sprintf( '<a href="%s" data-quantity="%s" class="%s" %s>%s</a>',
-                                esc_url( $product->add_to_cart_url() ),
-                                esc_attr( isset( $args['quantity'] ) ? $args['quantity'] : 1 ),
-                                esc_attr( isset( $args['class'] ) ? $args['class'] : 'button alt add_to_cart_button ajax_add_to_cart' ),
-                                isset( $args['attributes'] ) ? wc_implode_html_attributes( $args['attributes'] ) : '',
-                                esc_html( $product->add_to_cart_text() )
-                            ),
-                        $product, array() );
-                        ?>
-                        
-                        <div class="trust-badges">
-                            <p><strong>🚚 Fast Dispatch:</strong> Ships within 24 hours</p>
-                            <p><strong>🛡️ Warranty:</strong> 3 Year comprehensive warranty</p>
-                        </div>
-                    </div>
+    <!-- 4. PREMIUM & VERSATILE -->
+    <section class="py-section">
+        <div class="container">
+            <div class="split-section hero-split" style="gap: 5rem; height: auto;">
+                <div class="split-image">
+                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/detail_hardware.png" alt="Premium Detail" style="border-radius: 4px;">
                 </div>
-        <?php
-            endwhile;
-        else :
-            echo '<p class="text-center" style="padding: 4rem 0;">No product found. Please add a product in WooCommerce.</p>';
-        endif;
+                <div class="split-content">
+                    <h2 class="section-title-sm" style="font-size: 1.6rem;">Premium & Versatile</h2>
+                    <p style="font-size: 1rem; margin-bottom: 1.5rem;">Every element is designed with intention. Featuring bespoke hardware, concealed fixings, and modular construction. Designed to adapt to any bedroom interior effortlessly.</p>
+                    <!-- Details removed as they are now in the Shop config section -->
+                </div>
+            </div>
+        </div>
+    </section>
 
-        wp_reset_postdata();
-        ?>
+    <!-- 5. ABOUT US -->
+    <section id="about" class="py-section bg-alt" style="margin-top: 2rem;">
+        <div class="container">
+            <div class="split-section" style="gap: 5rem;">
+                <div class="split-content" style="order: 1; padding-right: 2rem;">
+                    <h2 class="section-title-sm" style="font-size: 1.6rem;">About Us</h2>
+                    <p style="font-size: 1rem; margin-bottom: 2rem;">We set out to create the perfect bed. The result is a combination of robust engineering and beautiful design. Manufactured locally, delivered directly to you. No middlemen, just uncompromised quality.</p>
+                    <a href="#" class="btn">Our Story</a>
+                </div>
+                <div class="split-image" style="order: 2;">
+                    <!-- Grayscale style image based on reference screenshot -->
+                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/about_founders.png" alt="About Us Founders" style="filter: grayscale(100%); border-radius: 4px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. ICONS GRID -->
+    <section class="py-section">
+        <div class="container">
+            <h2 class="section-title-sm text-center" style="margin-bottom: 3.5rem; font-size: 1.8rem;">The Everyday Bed With A Dark Side</h2>
+            <div class="icon-grid" style="background: transparent; padding: 0;">
+                <div class="icon-item">
+                    <div class="icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16v10H4z"/><path d="M8 10V6a4 4 0 0 1 8 0v4"/><path d="M12 14v2"/></svg>
+                    </div>
+                    <h4>Craftsmanship & Quality</h4>
+                    <p>Premium quality hardware. Solid wood frames.</p>
+                </div>
+                <div class="icon-item">
+                    <div class="icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2" ry="2"/><line x1="12" y1="8" x2="12" y2="20"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>
+                    </div>
+                    <h4>Dual-Purpose & Innovative</h4>
+                    <p>Discreetly transform your bed with hidden anchor points.</p>
+                </div>
+                <div class="icon-item">
+                    <div class="icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                    </div>
+                    <h4>Safety, Security, & Trust</h4>
+                    <p>We don't cut corners. 7-day replacement guarantee.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. REVIEWS -->
+    <section id="reviews" class="py-section bg-alt">
+        <div class="container">
+            <h2 class="section-title-sm text-center" style="margin-bottom: 3.5rem; font-size: 1.8rem;">What Our Customers Say</h2>
+            <div class="grid-3">
+                <div class="review-card" style="background: var(--color-surface); padding: 2rem; border-radius: 4px; border: 1px solid var(--color-border);">
+                    <div style="color: #FFD700; margin-bottom: 1rem; font-size: 1.2rem;">★★★★★</div>
+                    <p style="font-style: italic; font-size: 0.95rem; margin-bottom: 1.5rem; color: var(--color-text);">"The quality of the solid wood is exceptional. Best sleep I've had in years, and the assembly was incredibly straightforward."</p>
+                    <p style="font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">— Sarah M.</p>
+                </div>
+                <div class="review-card" style="background: var(--color-surface); padding: 2rem; border-radius: 4px; border: 1px solid var(--color-border);">
+                    <div style="color: #FFD700; margin-bottom: 1rem; font-size: 1.2rem;">★★★★★</div>
+                    <p style="font-style: italic; font-size: 0.95rem; margin-bottom: 1.5rem; color: var(--color-text);">"A beautiful piece of furniture. The brass hardware option adds such a nice premium touch to the dark brown wood finish."</p>
+                    <p style="font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">— James T.</p>
+                </div>
+                <div class="review-card" style="background: var(--color-surface); padding: 2rem; border-radius: 4px; border: 1px solid var(--color-border);">
+                    <div style="color: #FFD700; margin-bottom: 1rem; font-size: 1.2rem;">★★★★★</div>
+                    <p style="font-style: italic; font-size: 0.95rem; margin-bottom: 1.5rem; color: var(--color-text);">"Customer service is fantastic. True to their word on the 7-day guarantee, handled a minor delivery query immediately."</p>
+                    <p style="font-weight: 600; font-size: 0.85rem; text-transform: uppercase;">— Elena R.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. FAQ -->
+    <section id="faq" class="py-section">
+        <div class="container">
+            <h2 class="section-title-sm text-center" style="margin-bottom: 3.5rem; font-size: 1.8rem;">Frequently Asked Questions</h2>
+            <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="faq-item" style="border-bottom: 1px solid var(--color-border); padding-bottom: 1.5rem;">
+                    <h4 style="font-size: 1.05rem; margin-bottom: 0.5rem;">How long does delivery take?</h4>
+                    <p style="color: var(--color-muted); font-size: 0.95rem; margin: 0;">We typically process and ship orders within 3-5 business days across India.</p>
+                </div>
+                <div class="faq-item" style="border-bottom: 1px solid var(--color-border); padding-bottom: 1.5rem;">
+                    <h4 style="font-size: 1.05rem; margin-bottom: 0.5rem;">Is assembly required?</h4>
+                    <p style="color: var(--color-muted); font-size: 0.95rem; margin: 0;">Yes, but it is extremely straightforward. The bed frame is designed with modular construction and concealed fixings for easy, tool-free setup in under 30 minutes.</p>
+                </div>
+                <div class="faq-item" style="border-bottom: 1px solid var(--color-border); padding-bottom: 1.5rem;">
+                    <h4 style="font-size: 1.05rem; margin-bottom: 0.5rem;">What is the 7-day replacement guarantee?</h4>
+                    <p style="color: var(--color-muted); font-size: 0.95rem; margin: 0;">If you receive a defective or damaged product, we will replace it free of charge within 7 days of delivery to ensure complete satisfaction.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. CONTACT -->
+    <section id="contact" class="py-section bg-alt" style="border-top: 1px solid var(--color-border);">
+        <div class="container text-center">
+            <h2 class="section-title-sm" style="font-size: 1.8rem; margin-bottom: 1rem;">Have more questions?</h2>
+            <p style="color: var(--color-muted); font-size: 1.05rem; margin-bottom: 2rem;">Our team is here to help you build the perfect sleep setup.</p>
+            <a href="mailto:support@thebedcompany.com" class="btn">Contact Support</a>
+        </div>
     </section>
 
 </main>
