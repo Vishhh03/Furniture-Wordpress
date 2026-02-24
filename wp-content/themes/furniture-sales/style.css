@@ -317,9 +317,10 @@ img {
 
 /* FOOTER */
 .site-footer {
-    background: var(--color-bg-alt);
+    background: var(--color-text);
+    color: var(--color-bg);
     padding: 4rem 0 2rem;
-    border-top: 1px solid var(--color-border);
+    border-top: none;
 }
 
 .footer-grid {
@@ -336,11 +337,12 @@ img {
     letter-spacing: 0.05em;
     margin-bottom: 1.5rem;
     font-weight: 600;
+    color: var(--color-bg);
 }
 
 .footer-col p {
     font-size: 0.85rem;
-    color: var(--color-muted);
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .footer-col ul {
@@ -354,23 +356,23 @@ img {
 }
 
 .footer-col ul li a {
-    color: var(--color-muted);
+    color: rgba(255, 255, 255, 0.7);
     font-size: 0.85rem;
     transition: color var(--transition);
 }
 
 .footer-col ul li a:hover {
-    color: var(--color-text);
+    color: var(--color-bg);
 }
 
 .footer-bottom {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 2rem;
     font-size: 0.8rem;
-    color: var(--color-muted);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .payment-icons {
@@ -381,10 +383,11 @@ img {
 .payment-icons span {
     display: inline-block;
     padding: 0.2rem 0.5rem;
-    background: #fff;
-    border: 1px solid var(--color-border);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     font-size: 0.7rem;
     border-radius: 2px;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 /* WOOCOMMERCE OVERRIDES */

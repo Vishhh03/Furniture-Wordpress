@@ -22,10 +22,10 @@
             </a>
         </div>
         <nav class="site-navigation desktop-only">
-            <a href="#shop">Shop</a>
-            <a href="#reviews">Reviews</a>
-            <a href="#faq">FAQ</a>
-            <a href="#about">About</a>
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>#shop">Shop</a>
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>#reviews">Reviews</a>
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>#faq">FAQ</a>
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>#about">About</a>
         </nav>
         <div class="header-actions">
             <a href="#" class="icon-link">

@@ -205,7 +205,7 @@
         <div class="container text-center">
             <h2 class="section-title-sm" style="font-size: 1.8rem; margin-bottom: 1rem;">Have more questions?</h2>
             <p style="color: var(--color-muted); font-size: 1.05rem; margin-bottom: 2rem;">Our team is here to help you build the perfect sleep setup.</p>
-            <a href="mailto:support@thebedcompany.com" class="btn">Contact Support</a>
+            <a href="mailto:support@restandrevel.com" class="btn">Contact Support</a>
         </div>
     </section>
 
