@@ -57,7 +57,7 @@ function furniture_customize_register( $wp_customize ) {
     ) );
 
     $wp_customize->add_setting( 'hero_image', array(
-        'default'   => 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+        'default'   => get_template_directory_uri() . '/assets/images/hero_bed.png',
         'transport' => 'refresh',
     ) );
 
@@ -67,28 +67,95 @@ function furniture_customize_register( $wp_customize ) {
         'settings' => 'hero_image',
     ) ) );
 
-    // Features Section
-    $wp_customize->add_section( 'furniture_features', array(
-        'title'    => __( 'Feature Images', 'furniture-sales' ),
+    // Homepage Images Section
+    $wp_customize->add_section( 'furniture_homepage_images', array(
+        'title'    => __( 'Homepage Images', 'furniture-sales' ),
         'priority' => 31,
     ) );
 
     $settings = array(
-        'feature_1_img' => 'https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        'feature_2_img' => 'https://images.unsplash.com/photo-1519947486511-46149fa0a254?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        'feature_3_img' => 'https://images.unsplash.com/photo-1581539250439-c96689b516dd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        'product_image' => array(
+            'label'   => 'Configurator Product Image',
+            'default' => get_template_directory_uri() . '/assets/images/product_bed.png',
+        ),
+        'detail_image' => array(
+            'label'   => 'Feature Detail Image',
+            'default' => get_template_directory_uri() . '/assets/images/detail_hardware.png',
+        ),
+        'about_image' => array(
+            'label'   => 'About Founders Image',
+            'default' => get_template_directory_uri() . '/assets/images/about_founders.png',
+        ),
     );
 
-    foreach ( $settings as $id => $default ) {
+    foreach ( $settings as $id => $data ) {
         $wp_customize->add_setting( $id, array(
-            'default'   => $default,
+            'default'   => $data['default'],
             'transport' => 'refresh',
         ) );
         $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, $id, array(
-            'label'    => ucfirst( str_replace( '_', ' ', $id ) ),
-            'section'  => 'furniture_features',
+            'label'    => $data['label'],
+            'section'  => 'furniture_homepage_images',
             'settings' => $id,
         ) ) );
+    }
+
+    // Homepage Text Section
+    $wp_customize->add_section( 'furniture_homepage_text', array(
+        'title'    => __( 'Homepage Text', 'furniture-sales' ),
+        'priority' => 32,
+    ) );
+
+    $text_settings = array(
+        'hero_subtitle' => array(
+            'label'   => 'Hero Subtitle',
+            'type'    => 'textarea',
+            'default' => 'We craft our luxury solid wood beds to fit your lifestyle. From day to night, experience premium quality without compromise.',
+        ),
+        'banner_title' => array(
+            'label'   => 'Banner Title (Black Section)',
+            'type'    => 'text',
+            'default' => 'Handcrafted, solid wood bed frames',
+        ),
+        'banner_text' => array(
+            'label'   => 'Banner Paragraph (Black Section)',
+            'type'    => 'textarea',
+            'default' => 'Our signature bed frames are crafted with precision using sustainably sourced premium material. The minimalist design meets maximum comfort, offering a solid foundation for your sleep. Experience British engineering merged with timeless design principles.',
+        ),
+        'feature_title' => array(
+            'label'   => 'Feature Title (Hardware)',
+            'type'    => 'text',
+            'default' => 'Premium & Versatile',
+        ),
+        'feature_text' => array(
+            'label'   => 'Feature Paragraph (Hardware)',
+            'type'    => 'textarea',
+            'default' => 'Every element is designed with intention. Featuring bespoke hardware, concealed fixings, and modular construction. Designed to adapt to any bedroom interior effortlessly.',
+        ),
+        'about_title' => array(
+            'label'   => 'About Us Title',
+            'type'    => 'text',
+            'default' => 'About Us',
+        ),
+        'about_text' => array(
+            'label'   => 'About Us Paragraph',
+            'type'    => 'textarea',
+            'default' => 'We set out to create the perfect bed. The result is a combination of robust engineering and beautiful design. Manufactured locally, delivered directly to you. No middlemen, just uncompromised quality.',
+        ),
+    );
+
+    foreach ( $text_settings as $id => $data ) {
+        $wp_customize->add_setting( $id, array(
+            'default'           => $data['default'],
+            'transport'         => 'refresh',
+            'sanitize_callback' => $data['type'] === 'textarea' ? 'wp_kses_post' : 'sanitize_text_field',
+        ) );
+        $wp_customize->add_control( $id, array(
+            'label'    => $data['label'],
+            'section'  => 'furniture_homepage_text',
+            'type'     => $data['type'],
+            'settings' => $id,
+        ) );
     }
 
     // Reviews Section (Shortcode Support)
@@ -111,3 +178,100 @@ function furniture_customize_register( $wp_customize ) {
     ) );
 }
 add_action( 'customize_register', 'furniture_customize_register' );
+
+// ── WooCommerce Custom Configurator Data ────────────────────────────────────
+
+// 1. Intercept Add to Cart and save custom data
+add_filter( 'woocommerce_add_cart_item_data', 'furniture_add_cart_item_data', 10, 3 );
+function furniture_add_cart_item_data( $cart_item_data, $product_id, $variation_id ) {
+    if ( isset( $_REQUEST['bed_color'] ) ) {
+        $cart_item_data['bed_color'] = sanitize_text_field( wp_unslash( $_REQUEST['bed_color'] ) );
+    }
+    if ( isset( $_REQUEST['hook_finish'] ) ) {
+        $cart_item_data['hook_finish'] = sanitize_text_field( wp_unslash( $_REQUEST['hook_finish'] ) );
+    }
+    // Also generate a unique key so identical products with different configurations don't stack incorrectly
+    if ( isset( $_REQUEST['bed_color'] ) || isset( $_REQUEST['hook_finish'] ) ) {
+        $cart_item_data['unique_key'] = md5( microtime() . rand() );
+    }
+    return $cart_item_data;
+}
+
+// 2. Display custom data in the cart and checkout
+add_filter( 'woocommerce_get_item_data', 'furniture_get_item_data', 10, 2 );
+function furniture_get_item_data( $item_data, $cart_item_data ) {
+    if ( isset( $cart_item_data['bed_color'] ) ) {
+        $color_map = array(
+            'white'       => 'White',
+            'black'       => 'Black',
+            'light_brown' => 'Light Brown',
+            'dark_brown'  => 'Dark Brown'
+        );
+        $val = $cart_item_data['bed_color'];
+        $display_val = isset($color_map[$val]) ? $color_map[$val] : ucfirst($val);
+        $item_data[] = array(
+            'key'     => __( 'Wood Color', 'furniture-sales' ),
+            'value'   => wc_clean( $display_val ),
+            'display' => '',
+        );
+    }
+    if ( isset( $cart_item_data['hook_finish'] ) ) {
+        $finish_map = array(
+            'steel' => 'Steel Finish',
+            'brass' => 'Brass Finish (+₹3,000)'
+        );
+        $val = $cart_item_data['hook_finish'];
+        $display_val = isset($finish_map[$val]) ? $finish_map[$val] : ucfirst($val);
+        $item_data[] = array(
+            'key'     => __( 'Hardware Finish', 'furniture-sales' ),
+            'value'   => wc_clean( $display_val ),
+            'display' => '',
+        );
+    }
+    return $item_data;
+}
+
+// 3. Adjust price dynamically if Brass is selected
+add_action( 'woocommerce_before_calculate_totals', 'furniture_custom_price', 10, 1 );
+function furniture_custom_price( $cart_object ) {
+    if ( is_admin() && ! defined( 'DOING_AJAX' ) ) return;
+
+    // Avoid running this recursively
+    if ( did_action( 'woocommerce_before_calculate_totals' ) >= 2 ) return;
+
+    foreach ( $cart_object->get_cart() as $cart_item ) {
+        if ( isset( $cart_item['hook_finish'] ) && $cart_item['hook_finish'] === 'brass' ) {
+            $product = $cart_item['data'];
+            $base_price = (float) $product->get_regular_price();
+            if ( ! $base_price ) {
+                $base_price = 54999;
+            }
+            $product->set_price( $base_price + 3000 );
+        }
+    }
+}
+
+// 4. Save custom data to order line item meta
+add_action( 'woocommerce_checkout_create_order_line_item', 'furniture_add_custom_data_to_order', 10, 4 );
+function furniture_add_custom_data_to_order( $item, $cart_item_key, $values, $order ) {
+    if ( isset( $values['bed_color'] ) ) {
+        $color_map = array(
+            'white'       => 'White',
+            'black'       => 'Black',
+            'light_brown' => 'Light Brown',
+            'dark_brown'  => 'Dark Brown'
+        );
+        $val = $values['bed_color'];
+        $display_val = isset($color_map[$val]) ? $color_map[$val] : ucfirst($val);
+        $item->add_meta_data( __( 'Wood Color', 'furniture-sales' ), $display_val );
+    }
+    if ( isset( $values['hook_finish'] ) ) {
+        $finish_map = array(
+            'steel' => 'Steel Finish',
+            'brass' => 'Brass Finish (+₹3,000)'
+        );
+        $val = $values['hook_finish'];
+        $display_val = isset($finish_map[$val]) ? $finish_map[$val] : ucfirst($val);
+        $item->add_meta_data( __( 'Hardware Finish', 'furniture-sales' ), $display_val );
+    }
+}

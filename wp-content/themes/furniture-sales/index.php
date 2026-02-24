@@ -7,11 +7,11 @@
         <div class="container">
             <div class="split-section" style="gap: 2rem;">
                 <div class="split-image">
-                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/hero_bed.png" alt="Premium Bed Image" style="min-height: 500px; border-radius: 4px;">
+                    <img src="<?php echo esc_url( get_theme_mod( 'hero_image', get_template_directory_uri() . '/assets/images/hero_bed.png' ) ); ?>" alt="Premium Bed Image" style="min-height: 500px; border-radius: 4px;">
                 </div>
                 <div class="split-content" style="padding-left: 3rem;">
                     <h1 class="section-title">One Bed, Two Moods.</h1>
-                    <p style="font-size: 1.05rem; line-height: 1.7; margin-bottom: 2.5rem;">We craft our luxury solid wood beds to fit your lifestyle. From day to night, experience premium quality without compromise.</p>
+                    <p style="font-size: 1.05rem; line-height: 1.7; margin-bottom: 2.5rem;"><?php echo wp_kses_post( get_theme_mod( 'hero_subtitle', 'We craft our luxury solid wood beds to fit your lifestyle. From day to night, experience premium quality without compromise.' ) ); ?></p>
                     <a href="#shop" class="btn">Shop The Collection</a>
                 </div>
             </div>
@@ -23,11 +23,16 @@
         <div class="container">
             <div class="split-section" style="gap: 4rem;">
                 <div class="product-gallery">
-                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/product_bed.png" alt="Signature Bed Frame" style="border-radius: 4px; border: 1px solid var(--color-border); width: 100%;">
+                    <img src="<?php echo esc_url( get_theme_mod( 'product_image', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>" alt="Signature Bed Frame" style="border-radius: 4px; border: 1px solid var(--color-border); width: 100%;">
                 </div>
                 <div class="product-configurator">
-                    <h2 class="section-title-sm" style="font-size: 2.2rem; margin-bottom: 0.5rem; letter-spacing: -0.02em;">Signature Bed Frame</h2>
-                    <p class="price" style="font-size: 1.4rem; color: var(--color-muted); margin-bottom: 2rem;">₹54,999 <span style="font-size: 0.9rem;">+ Shipping</span></p>
+                    <?php
+                    $product = wc_get_product( 15 );
+                    $base_price = $product ? (float) $product->get_price() : 54999;
+                    $formatted_price = '₹' . number_format( $base_price );
+                    ?>
+                    <h2 class="section-title-sm" style="font-size: 2.2rem; margin-bottom: 0.5rem; letter-spacing: -0.02em;"><?php echo esc_html( get_the_title( 15 ) ); ?></h2>
+                    <p class="price" style="font-size: 1.4rem; color: var(--color-muted); margin-bottom: 2rem;"><span class="base-price-display"><?php echo esc_html( $formatted_price ); ?></span> <span style="font-size: 0.9rem;">+ Shipping</span></p>
                     
                     <div class="config-group" style="margin-bottom: 2.5rem;">
                         <h4 style="font-size: 0.85rem; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.05em; color: var(--color-muted);">Select Wood Color</h4>
@@ -76,7 +81,42 @@
                         7-day replacement guarantee
                     </div>
 
-                    <a href="?add-to-cart=15" data-quantity="1" class="btn button product_type_simple add_to_cart_button ajax_add_to_cart" data-product_id="15" aria-label="Add to cart" style="display: block; width: 100%; text-align: center; font-size: 1rem; padding: 1.2rem; text-decoration: none; box-sizing: border-box;">Add to Cart — ₹54,999</a>
+                    <a href="?add-to-cart=15" data-quantity="1" class="btn button product_type_simple add_to_cart_button ajax_add_to_cart" data-product_id="15" aria-label="Add to cart" style="display: block; width: 100%; text-align: center; font-size: 1rem; padding: 1.2rem; text-decoration: none; box-sizing: border-box;">Add to Cart — <?php echo esc_html( $formatted_price ); ?></a>
+
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        if (typeof jQuery === 'undefined') return;
+                        
+                        // 1. Update Price Dynamically
+                        const basePrice = <?php echo esc_js( $base_price ); ?>;
+                        const hardwarePrice = 3000;
+                        
+                        function updatePrice() {
+                            const finish = jQuery('input[name="hook_finish"]:checked').val();
+                            let total = basePrice;
+                            if (finish === 'brass') {
+                                total += hardwarePrice;
+                            }
+                            
+                            const formattedTotal = '₹' + total.toLocaleString('en-IN');
+                            jQuery('.product-configurator .price').html('<span class="base-price-display">' + formattedTotal + '</span> <span style="font-size: 0.9rem;">+ Shipping</span>');
+                            jQuery('.add_to_cart_button').text('Add to Cart — ' + formattedTotal);
+                        }
+                        
+                        jQuery('input[name="hook_finish"]').on('change', updatePrice);
+                        
+                        // 2. Inject Configurator Data into WooCommerce AJAX Add to Cart
+                        jQuery(document.body).on('adding_to_cart', function(event, $button, data) {
+                            data.bed_color = jQuery('input[name="bed_color"]:checked').val();
+                            data.hook_finish = jQuery('input[name="hook_finish"]:checked').val();
+                        });
+
+                        // 3. Force Cart Fragment Refresh after adding
+                        jQuery(document.body).on('added_to_cart', function(event, fragments, cart_hash, $button) {
+                            jQuery(document.body).trigger('wc_fragment_refresh');
+                        });
+                    });
+                    </script>
                 </div>
             </div>
         </div>
@@ -85,9 +125,9 @@
     <!-- 3. TEXT BANNER -->
     <section class="py-section" style="background-color: var(--color-text); color: var(--color-bg);">
         <div class="container text-center">
-            <h2 class="section-title-sm" style="font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--color-bg);">Handcrafted, solid wood bed frames</h2>
+            <h2 class="section-title-sm" style="font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--color-bg);"><?php echo esc_html( get_theme_mod( 'banner_title', 'Handcrafted, solid wood bed frames' ) ); ?></h2>
             <p style="max-width: 800px; margin: 0 auto; color: rgba(255, 255, 255, 0.7); font-size: 1.05rem; line-height: 1.7;">
-                Our signature bed frames are crafted with precision using sustainably sourced premium material. The minimalist design meets maximum comfort, offering a solid foundation for your sleep. Experience British engineering merged with timeless design principles.
+                <?php echo wp_kses_post( get_theme_mod( 'banner_text', 'Our signature bed frames are crafted with precision using sustainably sourced premium material. The minimalist design meets maximum comfort, offering a solid foundation for your sleep. Experience British engineering merged with timeless design principles.' ) ); ?>
             </p>
         </div>
     </section>
@@ -97,11 +137,11 @@
         <div class="container">
             <div class="split-section hero-split" style="gap: 5rem; height: auto;">
                 <div class="split-image">
-                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/detail_hardware.png" alt="Premium Detail" style="border-radius: 4px;">
+                    <img src="<?php echo esc_url( get_theme_mod( 'detail_image', get_template_directory_uri() . '/assets/images/detail_hardware.png' ) ); ?>" alt="Premium Detail" style="border-radius: 4px;">
                 </div>
                 <div class="split-content">
-                    <h2 class="section-title-sm" style="font-size: 1.6rem;">Premium & Versatile</h2>
-                    <p style="font-size: 1rem; margin-bottom: 1.5rem;">Every element is designed with intention. Featuring bespoke hardware, concealed fixings, and modular construction. Designed to adapt to any bedroom interior effortlessly.</p>
+                    <h2 class="section-title-sm" style="font-size: 1.6rem;"><?php echo esc_html( get_theme_mod( 'feature_title', 'Premium & Versatile' ) ); ?></h2>
+                    <p style="font-size: 1rem; margin-bottom: 1.5rem;"><?php echo wp_kses_post( get_theme_mod( 'feature_text', 'Every element is designed with intention. Featuring bespoke hardware, concealed fixings, and modular construction. Designed to adapt to any bedroom interior effortlessly.' ) ); ?></p>
                     <!-- Details removed as they are now in the Shop config section -->
                 </div>
             </div>
@@ -113,13 +153,13 @@
         <div class="container">
             <div class="split-section" style="gap: 5rem;">
                 <div class="split-content" style="order: 1; padding-right: 2rem;">
-                    <h2 class="section-title-sm" style="font-size: 1.6rem;">About Us</h2>
-                    <p style="font-size: 1rem; margin-bottom: 2rem;">We set out to create the perfect bed. The result is a combination of robust engineering and beautiful design. Manufactured locally, delivered directly to you. No middlemen, just uncompromised quality.</p>
+                    <h2 class="section-title-sm" style="font-size: 1.6rem;"><?php echo esc_html( get_theme_mod( 'about_title', 'About Us' ) ); ?></h2>
+                    <p style="font-size: 1rem; margin-bottom: 2rem;"><?php echo wp_kses_post( get_theme_mod( 'about_text', 'We set out to create the perfect bed. The result is a combination of robust engineering and beautiful design. Manufactured locally, delivered directly to you. No middlemen, just uncompromised quality.' ) ); ?></p>
                     <a href="#" class="btn">Our Story</a>
                 </div>
                 <div class="split-image" style="order: 2;">
                     <!-- Grayscale style image based on reference screenshot -->
-                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/about_founders.png" alt="About Us Founders" style="filter: grayscale(100%); border-radius: 4px;">
+                    <img src="<?php echo esc_url( get_theme_mod( 'about_image', get_template_directory_uri() . '/assets/images/about_founders.png' ) ); ?>" alt="About Us Founders" style="filter: grayscale(100%); border-radius: 4px;">
                 </div>
             </div>
         </div>

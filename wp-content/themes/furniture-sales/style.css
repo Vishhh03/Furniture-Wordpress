@@ -401,25 +401,136 @@ img {
 .woocommerce table.shop_table td {
     padding: 1rem;
     border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
 }
 
-.woocommerce .button {
-    background: var(--color-primary);
-    color: var(--color-primary-text);
-    border: 1px solid var(--color-primary);
-    padding: 0.8rem 2rem;
+.woocommerce table.shop_table td.product-thumbnail img {
+    max-width: 80px;
+    height: auto;
+    border-radius: 4px;
+}
+
+.woocommerce table.shop_table td.product-name a {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--color-text);
+    font-size: 1.1rem;
+}
+
+.woocommerce table.shop_table dl.variation {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    margin-top: 0.5rem;
+}
+
+.woocommerce table.shop_table dl.variation dt {
+    font-weight: 600;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+.woocommerce table.shop_table dl.variation dd {
+    display: inline-block;
+    margin: 0;
+}
+
+.woocommerce .button,
+.woocommerce button.button,
+.woocommerce input.button,
+.woocommerce #respond input#submit,
+.woocommerce a.button,
+.woocommerce button.button.alt,
+.woocommerce a.checkout-button,
+.woocommerce #place_order {
+    background: var(--color-primary) !important;
+    color: var(--color-primary-text) !important;
+    border: 1px solid var(--color-primary) !important;
+    padding: 0.8rem 2rem !important;
+    border-radius: var(--radius) !important;
+    font-family: var(--font-body) !important;
+    font-size: 0.85rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    cursor: pointer !important;
+    transition: all var(--transition) !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+}
+
+.woocommerce .button:hover,
+.woocommerce button.button:hover,
+.woocommerce input.button:hover,
+.woocommerce #respond input#submit:hover,
+.woocommerce a.button:hover,
+.woocommerce button.button.alt:hover,
+.woocommerce a.checkout-button:hover,
+.woocommerce #place_order:hover {
+    background: transparent !important;
+    color: var(--color-text) !important;
+}
+
+/* WOOCOMMERCE FORM & INPUT OVERRIDES */
+.woocommerce-cart .site-main,
+.woocommerce-checkout .site-main {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+.woocommerce form .form-row input.input-text,
+.woocommerce form .form-row textarea {
+    padding: 1rem;
+    border: 1px solid var(--color-border);
     border-radius: var(--radius);
     font-family: var(--font-body);
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    cursor: pointer;
-    transition: all var(--transition);
+    font-size: 0.95rem;
+    background: var(--color-bg);
+    color: var(--color-text);
 }
 
-.woocommerce .button:hover {
-    background: transparent;
+.woocommerce form .form-row input.input-text:focus,
+.woocommerce form .form-row textarea:focus {
+    outline: none;
+    border-color: var(--color-text);
+}
+
+.woocommerce-cart .cart-collaterals .cart_totals h2,
+.woocommerce-checkout h3 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* WOOCOMMERCE NOTICES */
+.woocommerce-message,
+.woocommerce-error,
+.woocommerce-info {
+    border-top-color: var(--color-text);
+    background-color: var(--color-bg-alt);
     color: var(--color-text);
+}
+
+.woocommerce-message::before,
+.woocommerce-info::before {
+    color: var(--color-text);
+}
+
+/* WOOCOMMERCE CHECKOUT PAYMENT BOX */
+.woocommerce-checkout #payment {
+    background: var(--color-bg-alt);
+    border-radius: var(--radius);
+}
+
+.woocommerce-checkout #payment ul.payment_methods {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.woocommerce-checkout #payment div.payment_box {
+    background-color: var(--color-bg);
+    color: var(--color-muted);
+}
+
+.woocommerce-checkout #payment div.payment_box::before {
+    border-bottom-color: var(--color-bg);
 }
 
 /* RESPONSIVE */

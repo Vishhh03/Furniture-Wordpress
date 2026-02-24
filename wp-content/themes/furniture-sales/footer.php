@@ -34,7 +34,7 @@
         <div class="footer-bottom">
             <div class="newsletter-signup">
                 <p style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--color-bg);">Let's connect</p>
-                <form action="#" method="get" style="display:flex;">
+                <form action="javascript:void(0);" onsubmit="alert('Thank you for subscribing! (Newsletter backend integration pending)');" method="post" style="display:flex;">
                     <input type="email" placeholder="Email Address" style="padding: 0.6rem 1rem; border: 1px solid rgba(255, 255, 255, 0.2); background: transparent; color: #fff; width: 220px; font-family: var(--font-body); font-size: 0.8rem; outline: none;">
                     <button type="submit" style="background: var(--color-bg); color: var(--color-text); border: none; padding: 0.6rem 1rem; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; font-weight: 600;">Subscribe</button>
                 </form>
