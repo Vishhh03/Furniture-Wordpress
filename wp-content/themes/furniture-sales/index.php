@@ -23,9 +23,15 @@
         <div class="container">
             <div class="split-section" style="gap: 4rem;">
                 <div class="product-gallery">
-                    <img src="<?php echo esc_url( get_theme_mod( 'product_image', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>" alt="Signature Bed Frame" style="border-radius: 4px; border: 1px solid var(--color-border); width: 100%;">
+                    <img id="main-product-image" 
+                         src="<?php echo esc_url( get_theme_mod( 'product_image_white', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>" 
+                         data-white="<?php echo esc_url( get_theme_mod( 'product_image_white', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>"
+                         data-black="<?php echo esc_url( get_theme_mod( 'product_image_black', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>"
+                         data-light_brown="<?php echo esc_url( get_theme_mod( 'product_image_light_brown', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>"
+                         data-dark_brown="<?php echo esc_url( get_theme_mod( 'product_image_dark_brown', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>"
+                         alt="Signature Bed Frame" style="border-radius: 4px; border: 1px solid var(--color-border); width: 100%; transition: opacity 0.2s ease;">
                 </div>
-                <div class="product-configurator">
+                <div class="product-configurator woocommerce">
                     <?php
                     $product = wc_get_product( 15 );
                     $base_price = $product ? (float) $product->get_price() : 54999;
@@ -61,6 +67,23 @@
                     </div>
 
                     <div class="config-group" style="margin-bottom: 2.5rem;">
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.05em; color: var(--color-muted);">Additional Add-ons</h4>
+                        <div class="hardware-options">
+                            <label class="hardware-label" style="display: flex; align-items: center; cursor: pointer;">
+                                <input type="checkbox" name="show_coverups" id="show_coverups" style="margin-right: 15px; width: 18px; height: 18px; cursor: pointer;">
+                                <span style="display: flex; align-items: center; gap: 0.4rem;">
+                                    Add Coverup Panels
+                                    <div class="furniture-tooltip">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-muted);"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                        <div class="furniture-tooltip-text">Coverup panels seamlessly hide the assembly holes for a flawless exterior finish, perfect if your bed is placed centrally in the room.</div>
+                                    </div>
+                                </span>
+                                <span style="margin-left: auto; color: var(--color-muted); font-size: 0.9rem;">+₹5,000</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="config-group" style="margin-bottom: 2.5rem;">
                         <h4 style="font-size: 0.85rem; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.05em; color: var(--color-muted);">Select Metal Hook Finish</h4>
                         <div class="hardware-options">
                             <label class="hardware-label">
@@ -90,12 +113,18 @@
                         // 1. Update Price Dynamically
                         const basePrice = <?php echo esc_js( $base_price ); ?>;
                         const hardwarePrice = 3000;
+                        const coverupsPrice = 5000;
                         
                         function updatePrice() {
                             const finish = jQuery('input[name="hook_finish"]:checked').val();
+                            const hasCoverups = jQuery('input[name="show_coverups"]').is(':checked');
+                            
                             let total = basePrice;
                             if (finish === 'brass') {
                                 total += hardwarePrice;
+                            }
+                            if (hasCoverups) {
+                                total += coverupsPrice;
                             }
                             
                             const formattedTotal = '₹' + total.toLocaleString('en-IN');
@@ -103,17 +132,61 @@
                             jQuery('.add_to_cart_button').text('Add to Cart — ' + formattedTotal);
                         }
                         
-                        jQuery('input[name="hook_finish"]').on('change', updatePrice);
+                        jQuery('input[name="hook_finish"], input[name="show_coverups"]').on('change', updatePrice);
                         
                         // 2. Inject Configurator Data into WooCommerce AJAX Add to Cart
                         jQuery(document.body).on('adding_to_cart', function(event, $button, data) {
                             data.bed_color = jQuery('input[name="bed_color"]:checked').val();
                             data.hook_finish = jQuery('input[name="hook_finish"]:checked').val();
+                            if (jQuery('input[name="show_coverups"]').is(':checked')) {
+                                data.has_coverups = 'yes';
+                            }
+                            
+                            if (!$button.data('original-text')) {
+                                $button.data('original-text', $button.text());
+                            }
+                            $button.html('<span class="furniture-spinner"></span> Adding to Cart...');
+                            $button.css('opacity', '0.8');
+                            $button.css('pointer-events', 'none');
                         });
 
                         // 3. Force Cart Fragment Refresh after adding
                         jQuery(document.body).on('added_to_cart', function(event, fragments, cart_hash, $button) {
                             jQuery(document.body).trigger('wc_fragment_refresh');
+                            
+                            $button.html('Added to Cart! ✓');
+                            $button.css('opacity', '1');
+                            
+                            setTimeout(() => {
+                                updatePrice(); // Restores original calculated text
+                                $button.css('pointer-events', '');
+                            }, 2500);
+                        });
+                        
+                        // 4. Dynamic Image Swapping
+                        const $mainImg = jQuery('#main-product-image');
+                        const $detailImg = jQuery('#detail-hardware-image');
+
+                        jQuery('input[name="bed_color"]').on('change', function() {
+                            const selectedColor = jQuery(this).val();
+                            const newSrc = $mainImg.data(selectedColor);
+                            if (newSrc && $mainImg.attr('src') !== newSrc) {
+                                $mainImg.css('opacity', 0.5);
+                                setTimeout(() => {
+                                    $mainImg.attr('src', newSrc).css('opacity', 1);
+                                }, 200);
+                            }
+                        });
+
+                        jQuery('input[name="hook_finish"]').on('change', function() {
+                            const selectedFinish = jQuery(this).val();
+                            const newSrc = $detailImg.data(selectedFinish);
+                            if (newSrc && $detailImg.attr('src') !== newSrc) {
+                                $detailImg.css('opacity', 0.5);
+                                setTimeout(() => {
+                                    $detailImg.attr('src', newSrc).css('opacity', 1);
+                                }, 200);
+                            }
                         });
                     });
                     </script>
@@ -137,7 +210,11 @@
         <div class="container">
             <div class="split-section hero-split" style="gap: 5rem; height: auto;">
                 <div class="split-image">
-                    <img src="<?php echo esc_url( get_theme_mod( 'detail_image', get_template_directory_uri() . '/assets/images/detail_hardware.png' ) ); ?>" alt="Premium Detail" style="border-radius: 4px;">
+                    <img id="detail-hardware-image" 
+                         src="<?php echo esc_url( get_theme_mod( 'detail_image_steel', get_template_directory_uri() . '/assets/images/detail_hardware.png' ) ); ?>"
+                         data-steel="<?php echo esc_url( get_theme_mod( 'detail_image_steel', get_template_directory_uri() . '/assets/images/detail_hardware.png' ) ); ?>"
+                         data-brass="<?php echo esc_url( get_theme_mod( 'detail_image_brass', get_template_directory_uri() . '/assets/images/detail_hardware.png' ) ); ?>"
+                         alt="Premium Detail" style="border-radius: 4px; transition: opacity 0.2s ease; width:100%;">
                 </div>
                 <div class="split-content">
                     <h2 class="section-title-sm" style="font-size: 1.6rem;"><?php echo esc_html( get_theme_mod( 'feature_title', 'Premium & Versatile' ) ); ?></h2>

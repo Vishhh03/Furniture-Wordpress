@@ -454,7 +454,12 @@ img {
     cursor: pointer !important;
     transition: all var(--transition) !important;
     text-decoration: none !important;
-    display: inline-block !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 48px !important;
+    padding: 0 2rem !important;
+    box-sizing: border-box !important;
 }
 
 .woocommerce .button:hover,
@@ -467,6 +472,50 @@ img {
 .woocommerce #place_order:hover {
     background: transparent !important;
     color: var(--color-text) !important;
+}
+
+/* ADDED TO CART BUTTON (VIEW CART) */
+.woocommerce a.added_to_cart {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 48px !important;
+    box-sizing: border-box !important;
+    margin-top: 1rem !important;
+    padding: 0 2rem !important;
+    font-size: 0.85rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    border-radius: var(--radius) !important;
+    background: transparent !important;
+    color: var(--color-text) !important;
+    border: 1px solid var(--color-text) !important;
+    transition: all var(--transition) !important;
+}
+
+.woocommerce a.added_to_cart:hover {
+    background: var(--color-text) !important;
+    color: var(--color-bg) !important;
+}
+
+/* SPINNER ANIMATION */
+@keyframes furniture-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.furniture-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: furniture-spin 0.8s ease-in-out infinite;
+    margin-right: 8px;
+    vertical-align: middle;
 }
 
 /* WOOCOMMERCE FORM & INPUT OVERRIDES */
@@ -642,3 +691,49 @@ img {
 }
 
 /* END PRODUCT CONFIGURATOR */
+
+/* TOOLTIP */
+.furniture-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: help;
+}
+
+.furniture-tooltip-text {
+    visibility: hidden;
+    width: 220px;
+    background-color: var(--color-text);
+    color: var(--color-bg);
+    text-align: center;
+    border-radius: 4px;
+    padding: 0.75rem;
+    position: absolute;
+    z-index: 10;
+    bottom: 150%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    font-weight: normal;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+}
+
+.furniture-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--color-text) transparent transparent transparent;
+}
+
+.furniture-tooltip:hover .furniture-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}

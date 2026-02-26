@@ -74,12 +74,28 @@ function furniture_customize_register( $wp_customize ) {
     ) );
 
     $settings = array(
-        'product_image' => array(
-            'label'   => 'Configurator Product Image',
+        'product_image_white' => array(
+            'label'   => 'Configurator Image (White)',
             'default' => get_template_directory_uri() . '/assets/images/product_bed.png',
         ),
-        'detail_image' => array(
-            'label'   => 'Feature Detail Image',
+        'product_image_black' => array(
+            'label'   => 'Configurator Image (Black)',
+            'default' => get_template_directory_uri() . '/assets/images/product_bed.png',
+        ),
+        'product_image_light_brown' => array(
+            'label'   => 'Configurator Image (Light Brown)',
+            'default' => get_template_directory_uri() . '/assets/images/product_bed.png',
+        ),
+        'product_image_dark_brown' => array(
+            'label'   => 'Configurator Image (Dark Brown)',
+            'default' => get_template_directory_uri() . '/assets/images/product_bed.png',
+        ),
+        'detail_image_steel' => array(
+            'label'   => 'Feature Detail Image (Steel)',
+            'default' => get_template_directory_uri() . '/assets/images/detail_hardware.png',
+        ),
+        'detail_image_brass' => array(
+            'label'   => 'Feature Detail Image (Brass)',
             'default' => get_template_directory_uri() . '/assets/images/detail_hardware.png',
         ),
         'about_image' => array(
@@ -190,8 +206,12 @@ function furniture_add_cart_item_data( $cart_item_data, $product_id, $variation_
     if ( isset( $_REQUEST['hook_finish'] ) ) {
         $cart_item_data['hook_finish'] = sanitize_text_field( wp_unslash( $_REQUEST['hook_finish'] ) );
     }
+    if ( isset( $_REQUEST['has_coverups'] ) ) {
+        $cart_item_data['has_coverups'] = sanitize_text_field( wp_unslash( $_REQUEST['has_coverups'] ) );
+    }
+    
     // Also generate a unique key so identical products with different configurations don't stack incorrectly
-    if ( isset( $_REQUEST['bed_color'] ) || isset( $_REQUEST['hook_finish'] ) ) {
+    if ( isset( $_REQUEST['bed_color'] ) || isset( $_REQUEST['hook_finish'] ) || isset( $_REQUEST['has_coverups'] ) ) {
         $cart_item_data['unique_key'] = md5( microtime() . rand() );
     }
     return $cart_item_data;
@@ -200,6 +220,13 @@ function furniture_add_cart_item_data( $cart_item_data, $product_id, $variation_
 // 2. Display custom data in the cart and checkout
 add_filter( 'woocommerce_get_item_data', 'furniture_get_item_data', 10, 2 );
 function furniture_get_item_data( $item_data, $cart_item_data ) {
+    if ( isset( $cart_item_data['has_coverups'] ) && $cart_item_data['has_coverups'] === 'yes' ) {
+        $item_data[] = array(
+            'key'     => __( 'Coverup Panels', 'furniture-sales' ),
+            'value'   => wc_clean( __( 'Included (+₹5,000)', 'furniture-sales' ) ),
+            'display' => '',
+        );
+    }
     if ( isset( $cart_item_data['bed_color'] ) ) {
         $color_map = array(
             'white'       => 'White',
@@ -231,7 +258,7 @@ function furniture_get_item_data( $item_data, $cart_item_data ) {
     return $item_data;
 }
 
-// 3. Adjust price dynamically if Brass is selected
+// 3. Adjust price dynamically based on all selections
 add_action( 'woocommerce_before_calculate_totals', 'furniture_custom_price', 10, 1 );
 function furniture_custom_price( $cart_object ) {
     if ( is_admin() && ! defined( 'DOING_AJAX' ) ) return;
@@ -240,13 +267,26 @@ function furniture_custom_price( $cart_object ) {
     if ( did_action( 'woocommerce_before_calculate_totals' ) >= 2 ) return;
 
     foreach ( $cart_object->get_cart() as $cart_item ) {
+        $product = $cart_item['data'];
+        $base_price = (float) $product->get_regular_price();
+        if ( ! $base_price ) {
+            $base_price = 54999;
+        }
+        
+        $custom_price = $base_price;
+        
+        // Add hardware cost
         if ( isset( $cart_item['hook_finish'] ) && $cart_item['hook_finish'] === 'brass' ) {
-            $product = $cart_item['data'];
-            $base_price = (float) $product->get_regular_price();
-            if ( ! $base_price ) {
-                $base_price = 54999;
-            }
-            $product->set_price( $base_price + 3000 );
+            $custom_price += 3000;
+        }
+        
+        // Add panel styles cost
+        if ( isset( $cart_item['has_coverups'] ) && $cart_item['has_coverups'] === 'yes' ) {
+            $custom_price += 5000;
+        }
+
+        if ($custom_price !== $base_price) {
+            $product->set_price( $custom_price );
         }
     }
 }
@@ -254,6 +294,9 @@ function furniture_custom_price( $cart_object ) {
 // 4. Save custom data to order line item meta
 add_action( 'woocommerce_checkout_create_order_line_item', 'furniture_add_custom_data_to_order', 10, 4 );
 function furniture_add_custom_data_to_order( $item, $cart_item_key, $values, $order ) {
+    if ( isset( $values['has_coverups'] ) && $values['has_coverups'] === 'yes' ) {
+        $item->add_meta_data( __( 'Coverup Panels', 'furniture-sales' ), __( 'Included', 'furniture-sales' ) );
+    }
     if ( isset( $values['bed_color'] ) ) {
         $color_map = array(
             'white'       => 'White',
