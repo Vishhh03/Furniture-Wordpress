@@ -38,7 +38,8 @@ services:
       # Only bind-mount OUR custom code on top
       - ./wp-content/themes/furniture-sales:/var/www/html/wp-content/themes/furniture-sales:delegated
       - ./wp-content/plugins/furniture-core:/var/www/html/wp-content/plugins/furniture-core:delegated
-      - ./php-custom.ini:/usr/local/etc/php/conf.d/custom.ini
+      # Sync PHP settings with what the VPS will use
+      - ./server-configs/php/php-custom.ini:/usr/local/etc/php/conf.d/custom.ini
     depends_on:
       - db
       - redis

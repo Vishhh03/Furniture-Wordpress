@@ -1,0 +1,45 @@
+---
+- name: Determine if WP-CLI is installed
+  stat:
+    path: /usr/local/bin/wp
+  register: wp_cli_installed
+
+- name: Download WP-CLI
+  get_url:
+    url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    dest: /tmp/wp-cli.phar
+  when: not wp_cli_installed.stat.exists
+
+- name: Install WP-CLI
+  command: mv /tmp/wp-cli.phar /usr/local/bin/wp
+  when: not wp_cli_installed.stat.exists
+
+- name: Make WP-CLI executable
+  file:
+    path: /usr/local/bin/wp
+    mode: '0755'
+  when: not wp_cli_installed.stat.exists
+
+- name: Create WordPress directory
+  file:
+    path: /var/www/html
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Check if WordPress is downloaded
+  stat:
+    path: /var/www/html/wp-includes
+  register: wp_downloaded
+
+- name: Download WordPress core
+  command: wp core download --path=/var/www/html --allow-root
+  when: not wp_downloaded.stat.exists
+
+- name: Ensure correct permissions for WordPress directory
+  file:
+    path: /var/www/html
+    owner: www-data
+    group: www-data
+    recurse: yes

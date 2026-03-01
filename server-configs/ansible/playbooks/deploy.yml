@@ -1,0 +1,19 @@
+---
+- name: Provision WordPress VPS
+  hosts: all
+  become: yes
+  vars:
+    # We will pass these via GitHub Secrets or an Ansible vault locally
+    domain_name: "yourdomain.com"
+    db_name: "wordpress"
+    db_user: "wordpress"
+    db_password: "CHANGEME"
+    db_root_password: "CHANGEME"
+  
+  roles:
+    - common
+    - webserver
+    - php
+    - database
+    - redis
+    - wordpress
