@@ -8,10 +8,10 @@ function furniture_sales_scripts() {
     // Theme stylesheet
     wp_enqueue_style( 'furniture-style', get_stylesheet_uri(), array(), '2.0' );
 
-    // Google Fonts: Outfit (headings) & Inter (body)
+    // Google Fonts: Lexend Deca (headings & body)
     wp_enqueue_style(
         'furniture-fonts',
-        'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;500;700&display=swap',
+        'https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap',
         array(),
         null
     );
@@ -31,6 +31,15 @@ function furniture_setup_theme() {
     ) );
 }
 add_action( 'after_setup_theme', 'furniture_setup_theme' );
+
+// ── Override Site Name & Tagline ────────────────────────────────────────────
+add_filter( 'option_blogname', function( $value ) {
+    return 'Rest & Revel';
+} );
+
+add_filter( 'option_blogdescription', function( $value ) {
+    return 'A modern approach to comfort.';
+} );
 
 // ── AJAX Cart Count Fragment (updates cart badge without reload) ─────────
 function furniture_cart_count_fragment( $fragments ) {

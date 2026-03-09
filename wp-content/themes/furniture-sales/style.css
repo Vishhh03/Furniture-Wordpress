@@ -7,21 +7,19 @@ Version: 2.0
 Text Domain: furniture-sales
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
 
 :root {
-    --color-bg: #f9f8f4;
-    /* Very light off-white/beige */
-    --color-bg-alt: #f1efe8;
-    /* Slightly darker beige */
-    --color-text: #1a1a1a;
-    --color-muted: #666666;
-    --color-border: #e2dfd5;
+    --color-bg: #FDF7DE;
+    --color-bg-alt: #f1ebd0;
+    --color-text: #1b1a18;
+    --color-muted: #636057;
+    --color-border: #a8a494;
     --color-surface: #ffffff;
-    --color-primary: #000000;
-    --color-primary-text: #ffffff;
-    --font-heading: 'Inter', sans-serif;
-    --font-body: 'Inter', sans-serif;
+    --color-primary: #50202F;
+    --color-primary-text: #FDF7DE;
+    --font-heading: 'Lexend Deca', sans-serif;
+    --font-body: 'Lexend Deca', sans-serif;
     --spacing-section: 6rem;
     --radius: 0px;
     --transition: 0.3s ease;
@@ -109,7 +107,7 @@ img {
 }
 
 .site-branding h1 {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Lexend Deca', sans-serif;
     font-size: 1.4rem;
     margin: 0;
     font-weight: 700;
@@ -736,4 +734,77 @@ img {
 .furniture-tooltip:hover .furniture-tooltip-text {
     visibility: visible;
     opacity: 1;
+}
+
+/* ==========================================================================
+   THEME FORMATTED CONTENT (Used for Pages like Privacy Policy, Terms, etc.)
+   ========================================================================== */
+.theme-formatted-content {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--color-muted);
+}
+
+.theme-formatted-content h1,
+.theme-formatted-content h2,
+.theme-formatted-content h3,
+.theme-formatted-content h4,
+.theme-formatted-content h5,
+.theme-formatted-content h6 {
+    color: var(--color-text);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.theme-formatted-content h2 {
+    font-size: 1.75rem;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.5rem;
+}
+
+.theme-formatted-content h3 {
+    font-size: 1.4rem;
+}
+
+.theme-formatted-content p {
+    margin-bottom: 1.5rem;
+}
+
+.theme-formatted-content ul,
+.theme-formatted-content ol {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+.theme-formatted-content li {
+    margin-bottom: 0.5rem;
+}
+
+.theme-formatted-content a {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 500;
+    transition: color var(--transition);
+}
+
+.theme-formatted-content a:hover {
+    color: var(--color-muted);
+}
+
+.theme-formatted-content strong,
+.theme-formatted-content b {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+.theme-formatted-content blockquote {
+    margin: 2rem 0;
+    padding: 1.5rem 2rem;
+    border-left: 4px solid var(--color-text);
+    background-color: var(--color-bg-alt);
+    color: var(--color-text);
+    font-size: 1.15rem;
+    font-style: italic;
 }
