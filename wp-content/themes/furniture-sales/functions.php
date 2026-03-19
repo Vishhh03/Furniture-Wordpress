@@ -894,6 +894,284 @@ function furniture_get_configurator_asset_image_map() {
     return $image_map;
 }
 
+function furniture_get_product_override_image_url( $product_id ) {
+    $product_id         = absint( $product_id );
+    $featured_product_id = furniture_get_featured_product_id();
+
+    if ( ! $product_id || $product_id !== $featured_product_id ) {
+        return '';
+    }
+
+    return furniture_get_configurator_asset_image_url( 'white', 1 );
+}
+
+function furniture_filter_single_product_image_html( $html, $post_thumbnail_id ) {
+    if ( ! is_product() ) {
+        return $html;
+    }
+
+    global $product;
+    if ( ! $product instanceof WC_Product ) {
+        return $html;
+    }
+
+    $override_url = furniture_get_product_override_image_url( $product->get_id() );
+    if ( ! $override_url ) {
+        return $html;
+    }
+
+    $alt_text = $product->get_name();
+
+    return sprintf(
+        '<div data-thumb="%1$s" class="woocommerce-product-gallery__image"><a href="%1$s"><img src="%1$s" alt="%2$s" class="wp-post-image" loading="eager" decoding="async" /></a></div>',
+        esc_url( $override_url ),
+        esc_attr( $alt_text )
+    );
+}
+add_filter( 'woocommerce_single_product_image_thumbnail_html', 'furniture_filter_single_product_image_html', 20, 2 );
+
+function furniture_filter_product_gallery_image_ids( $image_ids, $product ) {
+    if ( ! $product instanceof WC_Product ) {
+        return $image_ids;
+    }
+
+    if ( furniture_get_product_override_image_url( $product->get_id() ) ) {
+        return array();
+    }
+
+    return $image_ids;
+}
+add_filter( 'woocommerce_product_get_gallery_image_ids', 'furniture_filter_product_gallery_image_ids', 20, 2 );
+
+function furniture_render_single_product_configurator_fields() {
+    if ( ! is_product() ) {
+        return;
+    }
+
+    global $product;
+    if ( ! $product instanceof WC_Product ) {
+        return;
+    }
+
+    if ( $product->get_id() !== furniture_get_featured_product_id() ) {
+        return;
+    }
+
+    $brass_addon_price    = furniture_get_brass_addon_price();
+    $coverups_addon_price = furniture_get_coverups_addon_price();
+    $brass_price_text     = number_format_i18n( (float) $brass_addon_price, 0 );
+    $coverups_price_text  = number_format_i18n( (float) $coverups_addon_price, 0 );
+    ?>
+    <div class="single-product-configurator">
+        <div class="config-group" style="margin-bottom: 1.35rem;">
+            <h4 style="font-size: 0.78rem; text-transform: uppercase; margin-bottom: 0.8rem; letter-spacing: 0.05em; color: var(--color-muted);">Select Wood Color</h4>
+            <div class="color-swatches" style="display: flex; gap: 1rem;">
+                <label class="swatch-label">
+                    <input type="radio" name="bed_color" value="white" checked>
+                    <span class="swatch" style="background-color: #f4f4f4; border: 1px solid #d1d1d1;"></span>
+                    <span class="swatch-name">White</span>
+                </label>
+                <label class="swatch-label">
+                    <input type="radio" name="bed_color" value="black">
+                    <span class="swatch" style="background-color: #222222; border: 1px solid #222;"></span>
+                    <span class="swatch-name">Black</span>
+                </label>
+                <label class="swatch-label">
+                    <input type="radio" name="bed_color" value="light_brown">
+                    <span class="swatch" style="background-color: #c4a482; border: 1px solid #b3926f;"></span>
+                    <span class="swatch-name">Light Brown</span>
+                </label>
+                <label class="swatch-label">
+                    <input type="radio" name="bed_color" value="dark_brown">
+                    <span class="swatch" style="background-color: #4a3424; border: 1px solid #3d2a1c;"></span>
+                    <span class="swatch-name">Dark Brown</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="config-group" style="margin-bottom: 1rem;">
+            <h4 style="font-size: 0.78rem; text-transform: uppercase; margin-bottom: 0.7rem; letter-spacing: 0.05em; color: var(--color-muted);">Additional Add-ons</h4>
+            <div class="hardware-options">
+                <label class="hardware-label single-config-checkbox-row">
+                    <input type="checkbox" id="single_show_coverups" name="has_coverups" value="yes" style="display: inline-block; width: 16px; height: 16px;">
+                    <span>Add Coverup Panels</span>
+                    <span class="single-config-amount"><?php echo esc_html( '+Rs.' . $coverups_price_text ); ?></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="config-group" style="margin-bottom: 1rem;">
+            <h4 style="font-size: 0.78rem; text-transform: uppercase; margin-bottom: 0.7rem; letter-spacing: 0.05em; color: var(--color-muted);">Select Metal Hook Finish</h4>
+            <div class="hardware-options">
+                <label class="hardware-label">
+                    <input type="radio" name="hook_finish" value="steel" checked>
+                    <span>Steel Finish</span>
+                    <span style="margin-left: auto; color: var(--color-muted); font-size: 0.85rem;">Included</span>
+                </label>
+                <label class="hardware-label">
+                    <input type="radio" name="hook_finish" value="brass">
+                    <span>Brass Finish</span>
+                    <span style="margin-left: auto; color: var(--color-muted); font-size: 0.85rem;"><?php echo esc_html( '+Rs.' . $brass_price_text ); ?></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+add_action( 'woocommerce_before_add_to_cart_button', 'furniture_render_single_product_configurator_fields', 6 );
+
+function furniture_render_single_product_configurator_script() {
+    if ( ! is_product() ) {
+        return;
+    }
+
+    global $product;
+    if ( ! $product instanceof WC_Product ) {
+        return;
+    }
+
+    if ( $product->get_id() !== furniture_get_featured_product_id() ) {
+        return;
+    }
+
+    $base_prices       = furniture_get_product_base_prices( $product );
+    $base_regular      = (float) $base_prices['regular'];
+    $base_current      = (float) $base_prices['current'];
+    $brass_addon_price = furniture_get_brass_addon_price();
+    $coverups_price    = furniture_get_coverups_addon_price();
+    $config_payload    = furniture_get_bed_configuration_payload( $product->get_id() );
+    $asset_image_map   = furniture_get_configurator_asset_image_map();
+    ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const $ = window.jQuery;
+        if (!$) return;
+
+        const configRows = <?php echo wp_json_encode( $config_payload['rows'] ); ?>;
+        const assetImages = <?php echo wp_json_encode( $asset_image_map ); ?>;
+        const fallbackImages = {
+            white: <?php echo wp_json_encode( ! empty( $asset_image_map['white']['primary'] ) ? $asset_image_map['white']['primary'] : get_theme_mod( 'product_image_white', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>,
+            black: <?php echo wp_json_encode( ! empty( $asset_image_map['black']['primary'] ) ? $asset_image_map['black']['primary'] : get_theme_mod( 'product_image_black', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>,
+            light_brown: <?php echo wp_json_encode( ! empty( $asset_image_map['light_brown']['primary'] ) ? $asset_image_map['light_brown']['primary'] : get_theme_mod( 'product_image_light_brown', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>,
+            dark_brown: <?php echo wp_json_encode( ! empty( $asset_image_map['dark_brown']['primary'] ) ? $asset_image_map['dark_brown']['primary'] : get_theme_mod( 'product_image_dark_brown', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>
+        };
+
+        const baseCurrentPrice = <?php echo esc_js( $base_current ); ?>;
+        const baseRegularPrice = <?php echo esc_js( $base_regular ); ?>;
+        const brassPrice = <?php echo esc_js( $brass_addon_price ); ?>;
+        const coverupsPrice = <?php echo esc_js( $coverups_price ); ?>;
+        const priceWrap = $('.single-product .summary .price').first();
+
+        function formatInr(price) {
+            return 'Rs.' + Number(price || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function getSelection() {
+            return {
+                bed_color: $('input[name="bed_color"]:checked').val() || 'white',
+                hook_finish: $('input[name="hook_finish"]:checked').val() || 'steel',
+                coverups: $('#single_show_coverups').is(':checked') ? 'yes' : 'no'
+            };
+        }
+
+        function getAssetImage(selection, variant) {
+            const imageSet = assetImages[selection.bed_color] || {};
+            return imageSet[variant] || '';
+        }
+
+        function getConfigImage(selection) {
+            const baseAssetImage = getAssetImage(selection, 'primary');
+            if (baseAssetImage && selection.hook_finish === 'steel' && selection.coverups === 'no') {
+                return baseAssetImage;
+            }
+
+            let bestMatch = null;
+            let bestScore = -1;
+
+            configRows.forEach((row) => {
+                let score = 0;
+                let isMatch = true;
+
+                ['bed_color', 'hook_finish', 'coverups'].forEach((field) => {
+                    if (!isMatch) return;
+                    if (!row[field] || row[field] === 'any') return;
+                    if (row[field] !== selection[field]) {
+                        isMatch = false;
+                        return;
+                    }
+                    score += 1;
+                });
+
+                if (isMatch && score >= bestScore) {
+                    bestScore = score;
+                    bestMatch = row;
+                }
+            });
+
+            return (bestMatch && bestMatch.image_url) || baseAssetImage || fallbackImages[selection.bed_color] || fallbackImages.white;
+        }
+
+        function crossfadeMainImage(nextImage) {
+            const $mainImg = $('.single-product .woocommerce-product-gallery .woocommerce-product-gallery__image img').first();
+            if (!$mainImg.length || !nextImage || $mainImg.attr('src') === nextImage) {
+                return;
+            }
+
+            let $overlay = $('.single-product-image-overlay');
+            if (!$overlay.length) {
+                $overlay = $('<img class="single-product-image-overlay" alt="" aria-hidden="true" />');
+                $('.single-product .woocommerce-product-gallery .woocommerce-product-gallery__image').first().append($overlay);
+            }
+
+            $overlay.attr('src', nextImage).addClass('is-active');
+            setTimeout(() => {
+                $mainImg.attr('src', nextImage);
+                $overlay.removeClass('is-active');
+            }, 280);
+        }
+
+        function updatePriceAndImage() {
+            const selection = getSelection();
+            let currentTotal = baseCurrentPrice;
+            let regularTotal = baseRegularPrice;
+
+            if (selection.hook_finish === 'brass') {
+                currentTotal += brassPrice;
+                regularTotal += brassPrice;
+            }
+            if (selection.coverups === 'yes') {
+                currentTotal += coverupsPrice;
+                regularTotal += coverupsPrice;
+            }
+
+            if (priceWrap.length) {
+                if (regularTotal > currentTotal) {
+                    priceWrap.html('<del>' + formatInr(regularTotal) + '</del> <ins>' + formatInr(currentTotal) + '</ins>');
+                } else {
+                    priceWrap.html(formatInr(currentTotal));
+                }
+            }
+
+            crossfadeMainImage(getConfigImage(selection));
+        }
+
+        $('form.cart').on('change', 'input[name="bed_color"], input[name="hook_finish"], #single_show_coverups', updatePriceAndImage);
+
+        Object.values(assetImages).forEach((set) => {
+            ['primary', 'secondary'].forEach((variant) => {
+                if (!set || !set[variant]) return;
+                const img = new Image();
+                img.src = set[variant];
+            });
+        });
+
+        updatePriceAndImage();
+    });
+    </script>
+    <?php
+}
+add_action( 'wp_footer', 'furniture_render_single_product_configurator_script', 30 );
+
 function furniture_get_bed_configuration_image_url( $product_id, $selection = array() ) {
     $selection = wp_parse_args(
         $selection,

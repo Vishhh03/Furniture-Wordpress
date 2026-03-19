@@ -111,13 +111,16 @@ $categories   = get_terms(
                                 ?>
                                 <article <?php post_class( 'catalog-card' ); ?>>
                                     <a class="catalog-card-media" href="<?php the_permalink(); ?>">
+                                        <?php $override_image_url = function_exists( 'furniture_get_product_override_image_url' ) ? furniture_get_product_override_image_url( get_the_ID() ) : ''; ?>
                                         <?php if ( $product->is_on_sale() ) : ?>
                                             <span class="catalog-badge catalog-badge-sale">Sale</span>
                                         <?php elseif ( $is_new_product ) : ?>
                                             <span class="catalog-badge catalog-badge-new">New</span>
                                         <?php endif; ?>
 
-                                        <?php if ( has_post_thumbnail() ) : ?>
+                                        <?php if ( $override_image_url ) : ?>
+                                            <img src="<?php echo esc_url( $override_image_url ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>" loading="lazy" decoding="async" />
+                                        <?php elseif ( has_post_thumbnail() ) : ?>
                                             <?php the_post_thumbnail( 'woocommerce_thumbnail' ); ?>
                                         <?php else : ?>
                                             <?php echo wc_placeholder_img( 'woocommerce_thumbnail' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>

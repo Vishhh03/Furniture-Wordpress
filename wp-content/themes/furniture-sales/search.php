@@ -33,8 +33,11 @@
                             <?php if ( ! $product ) { continue; } ?>
                             <article <?php post_class( 'catalog-card' ); ?>>
                                 <a class="catalog-card-media" href="<?php the_permalink(); ?>">
+                                    <?php $override_image_url = function_exists( 'furniture_get_product_override_image_url' ) ? furniture_get_product_override_image_url( get_the_ID() ) : ''; ?>
                                     <?php
-                                    if ( has_post_thumbnail() ) {
+                                    if ( $override_image_url ) {
+                                        echo '<img src="' . esc_url( $override_image_url ) . '" alt="' . esc_attr( get_the_title() ) . '" loading="lazy" decoding="async" />';
+                                    } elseif ( has_post_thumbnail() ) {
                                         the_post_thumbnail( 'woocommerce_thumbnail' );
                                     } else {
                                         echo wc_placeholder_img( 'woocommerce_thumbnail' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
