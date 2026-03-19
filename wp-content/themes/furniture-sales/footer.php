@@ -1,16 +1,19 @@
 <footer class="site-footer">
+    <?php $shop_url = function_exists( 'furniture_get_shop_page_url' ) ? furniture_get_shop_page_url() : home_url( '/shop/' ); ?>
     <div class="container">
         <div class="footer-grid">
             <div class="footer-brand">
-                <h4 style="font-size: 0.95rem; font-weight: 700;">Rest & Revel</h4>
-                <p style="color: var(--color-muted); font-size: 0.85rem; margin-top: 1rem;">Crafted for perfectly engineered sleep. Minimum aesthetic, maximum comfort.</p>
+                <h4>Rest & Revel</h4>
+                <p>Crafted for perfectly engineered sleep. Minimum aesthetic, maximum comfort.</p>
                 <p style="margin-top: 1.5rem;">VAT ID: 123 4567 89<br>&copy; <?php echo date('Y'); ?> <?php bloginfo( 'name' ); ?>. All rights reserved.</p>
             </div>
             <div class="footer-col">
                 <h4 style="font-size: 0.95rem; font-weight: 700;">Helpful Links</h4>
                 <ul>
                     <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>#shop">Shop</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>#shop">Bed Configurator</a></li>
+                    <li><a href="<?php echo esc_url( $shop_url ); ?>">Shop</a></li>
+                    <li><a href="<?php echo esc_url( $shop_url ); ?>">Search Products</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>#about">Our Story</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>#reviews">Reviews</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>#faq">FAQ</a></li>

@@ -23,22 +23,44 @@
         <div class="container">
             <div class="split-section" style="gap: 4rem;">
                 <div class="product-gallery">
-                    <img id="main-product-image" 
-                         src="<?php echo esc_url( get_theme_mod( 'product_image_white', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>" 
-                         data-white="<?php echo esc_url( get_theme_mod( 'product_image_white', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>"
-                         data-black="<?php echo esc_url( get_theme_mod( 'product_image_black', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>"
-                         data-light_brown="<?php echo esc_url( get_theme_mod( 'product_image_light_brown', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>"
-                         data-dark_brown="<?php echo esc_url( get_theme_mod( 'product_image_dark_brown', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>"
-                         alt="Signature Bed Frame" style="border-radius: 4px; border: 1px solid var(--color-border); width: 100%; transition: opacity 0.2s ease;">
+                    <?php
+                    $featured_product_id  = furniture_get_featured_product_id();
+                    $product              = wc_get_product( $featured_product_id );
+                    $base_prices          = furniture_get_product_base_prices( $product );
+                    $base_regular_price   = (float) $base_prices['regular'];
+                    $base_current_price   = (float) $base_prices['current'];
+                    $brass_addon_price    = furniture_get_brass_addon_price();
+                    $coverups_addon_price = furniture_get_coverups_addon_price();
+                    $config_payload       = furniture_get_bed_configuration_payload( $featured_product_id );
+                    $configurator_asset_images = furniture_get_configurator_asset_image_map();
+                    $initial_image  = furniture_get_bed_configuration_image_url(
+                        $featured_product_id,
+                        array(
+                            'bed_color'   => 'white',
+                            'hook_finish' => 'steel',
+                            'coverups'    => 'no',
+                        )
+                    );
+                    $price_html             = furniture_get_price_display_html( $base_current_price, $base_regular_price );
+                    $formatted_current_text = wp_strip_all_tags( wc_price( $base_current_price ) );
+                    $coverups_price_text    = number_format_i18n( (float) $coverups_addon_price, 0 );
+                    $brass_price_text       = number_format_i18n( (float) $brass_addon_price, 0 );
+                    ?>
+                    <div class="configurator-image-stage">
+                        <img id="main-product-image-a"
+                             class="configurator-image-layer is-active"
+                             src="<?php echo esc_url( $initial_image ); ?>"
+                             alt="Signature Bed Frame">
+                        <img id="main-product-image-b"
+                             class="configurator-image-layer"
+                             src="<?php echo esc_url( $initial_image ); ?>"
+                             alt="Signature Bed Frame"
+                             aria-hidden="true">
+                    </div>
                 </div>
                 <div class="product-configurator woocommerce">
-                    <?php
-                    $product = wc_get_product( 15 );
-                    $base_price = $product ? (float) $product->get_price() : 54999;
-                    $formatted_price = '₹' . number_format( $base_price );
-                    ?>
-                    <h2 class="section-title-sm" style="font-size: 2.2rem; margin-bottom: 0.5rem; letter-spacing: -0.02em;"><?php echo esc_html( get_the_title( 15 ) ); ?></h2>
-                    <p class="price" style="font-size: 1.4rem; color: var(--color-muted); margin-bottom: 2rem;"><span class="base-price-display"><?php echo esc_html( $formatted_price ); ?></span> <span style="font-size: 0.9rem;">+ Shipping</span></p>
+                    <h2 class="section-title-sm" style="font-size: 2.2rem; margin-bottom: 0.5rem; letter-spacing: -0.02em;"><?php echo esc_html( $product ? $product->get_name() : get_the_title( $featured_product_id ) ); ?></h2>
+                    <p class="price" style="font-size: 1.4rem; color: var(--color-muted); margin-bottom: 2rem;"><span class="base-price-display"><?php echo wp_kses_post( $price_html ); ?></span> <span style="font-size: 0.9rem;">+ Shipping</span></p>
                     
                     <div class="config-group" style="margin-bottom: 2.5rem;">
                         <h4 style="font-size: 0.85rem; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.05em; color: var(--color-muted);">Select Wood Color</h4>
@@ -78,7 +100,7 @@
                                         <div class="furniture-tooltip-text">Coverup panels seamlessly hide the assembly holes for a flawless exterior finish, perfect if your bed is placed centrally in the room.</div>
                                     </div>
                                 </span>
-                                <span style="margin-left: auto; color: var(--color-muted); font-size: 0.9rem;">+₹5,000</span>
+                                <span style="margin-left: auto; color: var(--color-muted); font-size: 0.9rem;"><?php echo esc_html( '+₹' . $coverups_price_text ); ?></span>
                             </label>
                         </div>
                     </div>
@@ -94,7 +116,7 @@
                             <label class="hardware-label">
                                 <input type="radio" name="hook_finish" value="brass">
                                 <span>Brass Finish</span>
-                                <span style="margin-left: auto; color: var(--color-muted); font-size: 0.9rem;">+₹3,000</span>
+                                <span style="margin-left: auto; color: var(--color-muted); font-size: 0.9rem;"><?php echo esc_html( '+₹' . $brass_price_text ); ?></span>
                             </label>
                         </div>
                     </div>
@@ -104,35 +126,198 @@
                         7-day replacement guarantee
                     </div>
 
-                    <a href="?add-to-cart=15" data-quantity="1" class="btn button product_type_simple add_to_cart_button ajax_add_to_cart" data-product_id="15" aria-label="Add to cart" style="display: block; width: 100%; text-align: center; font-size: 1rem; padding: 1.2rem; text-decoration: none; box-sizing: border-box;">Add to Cart — <?php echo esc_html( $formatted_price ); ?></a>
+                    <a href="<?php echo esc_url( add_query_arg( 'add-to-cart', $featured_product_id ) ); ?>" data-quantity="1" class="btn button product_type_simple add_to_cart_button ajax_add_to_cart" data-product_id="<?php echo esc_attr( $featured_product_id ); ?>" aria-label="Add to cart" style="display: block; width: 100%; text-align: center; font-size: 1rem; padding: 1.2rem; text-decoration: none; box-sizing: border-box;">Add to Cart - <?php echo esc_html( $formatted_current_text ); ?></a>
 
                     <script>
                     document.addEventListener('DOMContentLoaded', function() {
                         if (typeof jQuery === 'undefined') return;
                         
+                        const configRows = <?php echo wp_json_encode( $config_payload['rows'] ); ?>;
+                        const assetImages = <?php echo wp_json_encode( $configurator_asset_images ); ?>;
+                        const fallbackImages = {
+                            white: <?php echo wp_json_encode( ! empty( $configurator_asset_images['white']['primary'] ) ? $configurator_asset_images['white']['primary'] : get_theme_mod( 'product_image_white', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>,
+                            black: <?php echo wp_json_encode( ! empty( $configurator_asset_images['black']['primary'] ) ? $configurator_asset_images['black']['primary'] : get_theme_mod( 'product_image_black', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>,
+                            light_brown: <?php echo wp_json_encode( ! empty( $configurator_asset_images['light_brown']['primary'] ) ? $configurator_asset_images['light_brown']['primary'] : get_theme_mod( 'product_image_light_brown', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>,
+                            dark_brown: <?php echo wp_json_encode( ! empty( $configurator_asset_images['dark_brown']['primary'] ) ? $configurator_asset_images['dark_brown']['primary'] : get_theme_mod( 'product_image_dark_brown', get_template_directory_uri() . '/assets/images/product_bed.png' ) ); ?>
+                        };
+
                         // 1. Update Price Dynamically
-                        const basePrice = <?php echo esc_js( $base_price ); ?>;
-                        const hardwarePrice = 3000;
-                        const coverupsPrice = 5000;
+                        const featuredProductId = <?php echo (int) $featured_product_id; ?>;
+                        const baseCurrentPrice = <?php echo esc_js( $base_current_price ); ?>;
+                        const baseRegularPrice = <?php echo esc_js( $base_regular_price ); ?>;
+                        const hardwarePrice = <?php echo esc_js( $brass_addon_price ); ?>;
+                        const coverupsPrice = <?php echo esc_js( $coverups_addon_price ); ?>;
+                        const currencySymbol = '₹';
+                        
+                        function formatInr(price) {
+                            return currencySymbol + Number(price || 0).toLocaleString('en-IN');
+                        }
+
+                        jQuery('.add_to_cart_button')
+                            .attr('href', '?add-to-cart=' + featuredProductId)
+                            .attr('data-product_id', featuredProductId);
+                        jQuery('#show_coverups').closest('label').find('span').last().text('+' + formatInr(coverupsPrice));
+                        jQuery('input[name="hook_finish"][value="brass"]').closest('label').find('span').last().text('+' + formatInr(hardwarePrice));
                         
                         function updatePrice() {
                             const finish = jQuery('input[name="hook_finish"]:checked').val();
                             const hasCoverups = jQuery('input[name="show_coverups"]').is(':checked');
-                            
-                            let total = basePrice;
+                            let nextCurrentTotal = baseCurrentPrice;
+                            let nextRegularTotal = baseRegularPrice;
+
                             if (finish === 'brass') {
-                                total += hardwarePrice;
+                                nextCurrentTotal += hardwarePrice;
+                                nextRegularTotal += hardwarePrice;
                             }
                             if (hasCoverups) {
-                                total += coverupsPrice;
+                                nextCurrentTotal += coverupsPrice;
+                                nextRegularTotal += coverupsPrice;
                             }
-                            
-                            const formattedTotal = '₹' + total.toLocaleString('en-IN');
-                            jQuery('.product-configurator .price').html('<span class="base-price-display">' + formattedTotal + '</span> <span style="font-size: 0.9rem;">+ Shipping</span>');
-                            jQuery('.add_to_cart_button').text('Add to Cart — ' + formattedTotal);
+
+                            let priceHtml = '<span class="base-price-display">' + formatInr(nextCurrentTotal) + '</span>';
+                            if (nextRegularTotal > nextCurrentTotal) {
+                                priceHtml = '<span class="base-price-display"><del>' + formatInr(nextRegularTotal) + '</del> <ins>' + formatInr(nextCurrentTotal) + '</ins></span>';
+                            }
+
+                            jQuery('.product-configurator .price').html(priceHtml + ' <span style="font-size: 0.9rem;">+ Shipping</span>');
+                            jQuery('.add_to_cart_button').text('Add to Cart - ' + formatInr(nextCurrentTotal));
+                            return;
+
                         }
+
+                        function getSelection() {
+                            return {
+                                bed_color: jQuery('input[name="bed_color"]:checked').val() || 'white',
+                                hook_finish: jQuery('input[name="hook_finish"]:checked').val() || 'steel',
+                                coverups: jQuery('input[name="show_coverups"]').is(':checked') ? 'yes' : 'no'
+                            };
+                        }
+
+                        const imageLayers = [
+                            document.getElementById('main-product-image-a'),
+                            document.getElementById('main-product-image-b')
+                        ];
+                        let activeImageLayerIndex = 0;
+                        let hoverPreviewVariant = '';
+
+                        function getAssetImage(selection, variant = 'primary') {
+                            const colorImages = assetImages[selection.bed_color] || {};
+                            return colorImages[variant] || '';
+                        }
+
+                        function getConfigImage(selection) {
+                            let bestMatch = null;
+                            let bestScore = -1;
+
+                            if (hoverPreviewVariant) {
+                                const hoverImage = getAssetImage(selection, hoverPreviewVariant);
+                                if (hoverImage) {
+                                    return hoverImage;
+                                }
+                            }
+
+                            const baseAssetImage = getAssetImage(selection, 'primary');
+                            if (baseAssetImage && selection.hook_finish === 'steel' && selection.coverups === 'no') {
+                                return baseAssetImage;
+                            }
+
+                            configRows.forEach((row) => {
+                                let score = 0;
+                                let isMatch = true;
+
+                                ['bed_color', 'hook_finish', 'coverups'].forEach((field) => {
+                                    if (!isMatch) {
+                                        return;
+                                    }
+
+                                    if (!row[field] || row[field] === 'any') {
+                                        return;
+                                    }
+
+                                    if (row[field] !== selection[field]) {
+                                        isMatch = false;
+                                        return;
+                                    }
+
+                                    score += 1;
+                                });
+
+                                if (isMatch && score >= bestScore) {
+                                    bestScore = score;
+                                    bestMatch = row;
+                                }
+                            });
+
+                            return (bestMatch && bestMatch.image_url) || baseAssetImage || fallbackImages[selection.bed_color] || fallbackImages.white;
+                        }
+
+                        function transitionMainImage(nextImage) {
+                            const currentLayer = imageLayers[activeImageLayerIndex];
+                            const nextLayer = imageLayers[1 - activeImageLayerIndex];
+
+                            if (!currentLayer || !nextLayer || !nextImage || currentLayer.getAttribute('src') === nextImage) {
+                                return;
+                            }
+
+                            const activateNextLayer = () => {
+                                nextLayer.classList.add('is-active');
+                                currentLayer.classList.remove('is-active');
+                                activeImageLayerIndex = 1 - activeImageLayerIndex;
+                            };
+
+                            nextLayer.onload = () => {
+                                window.requestAnimationFrame(activateNextLayer);
+                                nextLayer.onload = null;
+                            };
+                            nextLayer.setAttribute('src', nextImage);
+
+                            if (nextLayer.complete) {
+                                activateNextLayer();
+                                nextLayer.onload = null;
+                            }
+                        }
+
+                        function updateMainImage() {
+                            const selection = getSelection();
+                            const nextImage = getConfigImage(selection);
+                            transitionMainImage(nextImage);
+                        }
+
+                        Object.values(assetImages).forEach((imageSet) => {
+                            ['primary', 'secondary'].forEach((variant) => {
+                                if (!imageSet || !imageSet[variant]) {
+                                    return;
+                                }
+
+                                const preloadImage = new Image();
+                                preloadImage.src = imageSet[variant];
+                            });
+                        });
+
+                        const $steelFinishLabel = jQuery('input[name="hook_finish"][value="steel"]').closest('label');
+                        $steelFinishLabel.on('mouseenter focusin', function() {
+                            const previewImage = getAssetImage(getSelection(), 'secondary');
+                            if (!previewImage) {
+                                return;
+                            }
+
+                            hoverPreviewVariant = 'secondary';
+                            updateMainImage();
+                        });
+
+                        $steelFinishLabel.on('mouseleave focusout', function() {
+                            if (!hoverPreviewVariant) {
+                                return;
+                            }
+
+                            hoverPreviewVariant = '';
+                            updateMainImage();
+                        });
                         
-                        jQuery('input[name="hook_finish"], input[name="show_coverups"]').on('change', updatePrice);
+                        jQuery('input[name="bed_color"], input[name="hook_finish"], input[name="show_coverups"]').on('change', function() {
+                            updatePrice();
+                            updateMainImage();
+                        });
                         
                         // 2. Inject Configurator Data into WooCommerce AJAX Add to Cart
                         jQuery(document.body).on('adding_to_cart', function(event, $button, data) {
@@ -163,20 +348,8 @@
                             }, 2500);
                         });
                         
-                        // 4. Dynamic Image Swapping
-                        const $mainImg = jQuery('#main-product-image');
+                        // 4. Supporting detail image swapping
                         const $detailImg = jQuery('#detail-hardware-image');
-
-                        jQuery('input[name="bed_color"]').on('change', function() {
-                            const selectedColor = jQuery(this).val();
-                            const newSrc = $mainImg.data(selectedColor);
-                            if (newSrc && $mainImg.attr('src') !== newSrc) {
-                                $mainImg.css('opacity', 0.5);
-                                setTimeout(() => {
-                                    $mainImg.attr('src', newSrc).css('opacity', 1);
-                                }, 200);
-                            }
-                        });
 
                         jQuery('input[name="hook_finish"]').on('change', function() {
                             const selectedFinish = jQuery(this).val();
@@ -188,6 +361,8 @@
                                 }, 200);
                             }
                         });
+
+                        updateMainImage();
                     });
                     </script>
                 </div>

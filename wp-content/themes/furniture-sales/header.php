@@ -3,7 +3,7 @@
 <head>
     <meta charset="<?php bloginfo( 'charset' ); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="<?php echo get_template_directory_uri(); ?>/assets/images/logo.svg" type="image/svg+xml">
+    <link rel="icon" href="<?php echo get_template_directory_uri(); ?>/assets/images/favicon.svg" type="image/svg+xml">
     <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
@@ -16,6 +16,10 @@
 </div>
 
 <header class="site-header">
+    <?php
+    $shop_url    = function_exists( 'furniture_get_shop_page_url' ) ? furniture_get_shop_page_url() : home_url( '/shop/' );
+    $account_url = class_exists( 'WooCommerce' ) ? wc_get_page_permalink( 'myaccount' ) : '';
+    ?>
     <div class="header-container">
         <div class="site-branding">
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
@@ -23,15 +27,21 @@
             </a>
         </div>
         <nav class="site-navigation desktop-only">
-            <a href="<?php echo esc_url( home_url( '/' ) ); ?>#shop">Shop</a>
+            <a href="<?php echo esc_url( home_url( '/' ) ); ?>#shop">Bed Configurator</a>
+            <a href="<?php echo esc_url( $shop_url ); ?>">Shop</a>
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>#reviews">Reviews</a>
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>#faq">FAQ</a>
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>#about">About</a>
         </nav>
         <div class="header-actions">
-            <a href="#" class="icon-link">
+            <a href="<?php echo esc_url( $shop_url ); ?>" class="icon-link" title="Search Products" aria-label="Search Products">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+            </a>
+            <?php if ( $account_url ) : ?>
+            <a href="<?php echo esc_url( $account_url ); ?>" class="icon-link" title="My Account" aria-label="My Account">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             </a>
+            <?php endif; ?>
             <?php if ( class_exists( 'WooCommerce' ) ) : ?>
                 <a href="<?php echo wc_get_cart_url(); ?>" class="cart-link" title="View Cart">
                     <svg class="cart-icon" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">

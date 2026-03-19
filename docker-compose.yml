@@ -32,6 +32,7 @@ services:
         define( 'WP_MAX_MEMORY_LIMIT', '512M' );
         define( 'WP_REDIS_HOST', 'redis' );
         define( 'WP_REDIS_PORT', 6379 );
+        define( 'WP_CACHE', true );
     volumes:
       # Fast named volume for ALL of wp-content (plugins, woocommerce, etc)
       - wp_content:/var/www/html/wp-content
